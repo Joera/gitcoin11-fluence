@@ -20,6 +20,10 @@ func activate() -> string: -- IpfsGetResult, IpfsGetResult:
 
     on LOCAL_NODE:
 
+
+        -- create sql with env stuff .. inc priv key 
+        -- allow access only to ???? 
+
         update_filter <- Ipfs.get_from(PB_UPDATE_FILTER_AIR_CID, REMOTE_IPFS_PEER) 
         polling <- Ipfs.get_from(PB_POLL_AIR_CID, REMOTE_IPFS_PEER) 
 
