@@ -1,0 +1,7 @@
+(seq
+ (seq
+  (call %init_peer_id% ("getDataSrv" "node") [] node)
+  (call %init_peer_id% ("getDataSrv" "timeout_sec") [] timeout_sec)
+ )
+ (call node ("aqua-ipfs" "set_timeout") [timeout_sec])
+)

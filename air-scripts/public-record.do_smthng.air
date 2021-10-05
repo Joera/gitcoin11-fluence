@@ -1,0 +1,10 @@
+(xor
+ (seq
+  (call %init_peer_id% ("getDataSrv" "-relay-") [] -relay-)
+  (xor
+   (call %init_peer_id% ("callbackSrv" "response") ["hallo"])
+   (call %init_peer_id% ("errorHandlingSrv" "error") [%last_error% 1])
+  )
+ )
+ (call %init_peer_id% ("errorHandlingSrv" "error") [%last_error% 2])
+)

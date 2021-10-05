@@ -1,0 +1,68 @@
+(seq
+ (seq
+  (seq
+   (seq
+    (seq
+     (seq
+      (seq
+       (seq
+        (seq
+         (seq
+          (seq
+           (seq
+            (seq
+             (seq
+              (seq
+               (seq
+                (call "12D3KooWLPyuBWNjSD2ajdfYeNK9oAMWXaWbEYC94bCL6AfPVMUP" ("aqua-ipfs" "get_from") ["QmTsiEMdzFU29cRAqfmUMh9WbmJRFcFFrDHdWvNmXb8bzU" "/ip4/64.227.70.116/tcp/5001"] get_result)
+                (xor
+                 (match get_result.$.success! true
+                  (seq
+                   (seq
+                    (call "12D3KooWLPyuBWNjSD2ajdfYeNK9oAMWXaWbEYC94bCL6AfPVMUP" ("dist" "default_module_config") ["ens_facade"] config)
+                    (call "12D3KooWLPyuBWNjSD2ajdfYeNK9oAMWXaWbEYC94bCL6AfPVMUP" ("dist" "add_module_from_vault") [get_result.$.path! config] module_hash)
+                   )
+                   (ap module_hash $modules)
+                  )
+                 )
+                 (ap get_result.$.error! $err)
+                )
+               )
+               (call "12D3KooWLPyuBWNjSD2ajdfYeNK9oAMWXaWbEYC94bCL6AfPVMUP" ("aqua-ipfs" "get_from") ["QmY8Qe375TJCMaAiskUZTfFTyABrULTgVrmW8sYQELFS5d" "/ip4/64.227.70.116/tcp/5001"] get_result0)
+              )
+              (ap 100 $mem_pages_count)
+             )
+             (call "12D3KooWLPyuBWNjSD2ajdfYeNK9oAMWXaWbEYC94bCL6AfPVMUP" ("op" "array") ["curl" "/usr/bin/curl"] curl)
+            )
+            (call "12D3KooWLPyuBWNjSD2ajdfYeNK9oAMWXaWbEYC94bCL6AfPVMUP" ("op" "array") [curl] mounted_binaries_array)
+           )
+           (ap mounted_binaries_array $mounted_binaries)
+          )
+          (call "12D3KooWLPyuBWNjSD2ajdfYeNK9oAMWXaWbEYC94bCL6AfPVMUP" ("dist" "make_module_config") ["curl_adapter" $mem_pages_count [] [] [] [] $mounted_binaries []] config0)
+         )
+         (call "12D3KooWLPyuBWNjSD2ajdfYeNK9oAMWXaWbEYC94bCL6AfPVMUP" ("dist" "add_module_from_vault") [get_result0.$.path! config0] module_hash0)
+        )
+        (call "12D3KooWLPyuBWNjSD2ajdfYeNK9oAMWXaWbEYC94bCL6AfPVMUP" ("op" "concat_strings") ["hash:" module_hash0] dependency)
+       )
+       (ap dependency $dependencies)
+      )
+      (fold $modules m
+       (seq
+        (seq
+         (call "12D3KooWLPyuBWNjSD2ajdfYeNK9oAMWXaWbEYC94bCL6AfPVMUP" ("op" "concat_strings") ["hash:" m] prefixed_hash)
+         (ap prefixed_hash $dependencies)
+        )
+        (next m)
+       )
+      )
+     )
+     (call "12D3KooWLPyuBWNjSD2ajdfYeNK9oAMWXaWbEYC94bCL6AfPVMUP" ("dist" "make_blueprint") ["ens_service" $dependencies] blueprint)
+    )
+    (call "12D3KooWLPyuBWNjSD2ajdfYeNK9oAMWXaWbEYC94bCL6AfPVMUP" ("dist" "add_blueprint") [blueprint] blueprint_id)
+   )
+   (call "12D3KooWLPyuBWNjSD2ajdfYeNK9oAMWXaWbEYC94bCL6AfPVMUP" ("srv" "create") [blueprint_id] service_id)
+  )
+  (call "12D3KooWLPyuBWNjSD2ajdfYeNK9oAMWXaWbEYC94bCL6AfPVMUP" (service_id "get_record") ["notice" "https://eth-rinkeby.alchemyapi.io/v2/oDMoyeai5fTVQxfpjKQVJM3ltl1ap9z7"] res)
+ )
+ (call %init_peer_id% ("callbackSrv" "response") [res])
+)

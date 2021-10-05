@@ -1,0 +1,83 @@
+(seq
+ (seq
+  (seq
+   (seq
+    (seq
+     (seq
+      (seq
+       (seq
+        (seq
+         (seq
+          (seq
+           (seq
+            (seq
+             (seq
+              (seq
+               (seq
+                (seq
+                 (seq
+                  (seq
+                   (seq
+                    (seq
+                     (call %init_peer_id% ("getDataSrv" "relay") [] relay)
+                     (call %init_peer_id% ("getDataSrv" "facade_cid") [] facade_cid)
+                    )
+                    (call %init_peer_id% ("getDataSrv" "curl_adapter_cid") [] curl_adapter_cid)
+                   )
+                   (call %init_peer_id% ("getDataSrv" "ipfs") [] ipfs)
+                  )
+                  (call %init_peer_id% ("getDataSrv" "module_name") [] module_name)
+                 )
+                 (call %init_peer_id% ("getDataSrv" "service_name") [] service_name)
+                )
+                (call relay ("aqua-ipfs" "get_from") [facade_cid ipfs] get_result)
+               )
+               (xor
+                (match get_result.$.success! true
+                 (seq
+                  (seq
+                   (call relay ("dist" "default_module_config") [module_name] config)
+                   (call relay ("dist" "add_module_from_vault") [get_result.$.path! config] module_hash)
+                  )
+                  (ap module_hash $modules)
+                 )
+                )
+                (ap get_result.$.error! $err)
+               )
+              )
+              (call relay ("aqua-ipfs" "get_from") [curl_adapter_cid ipfs] get_result0)
+             )
+             (ap 100 $mem_pages_count)
+            )
+            (call relay ("op" "array") ["curl" "/usr/bin/curl"] curl)
+           )
+           (call relay ("op" "array") [curl] mounted_binaries_array)
+          )
+          (ap mounted_binaries_array $mounted_binaries)
+         )
+         (call relay ("dist" "make_module_config") ["curl_adapter" $mem_pages_count [] [] [] [] $mounted_binaries []] config0)
+        )
+        (call relay ("dist" "add_module_from_vault") [get_result0.$.path! config0] module_hash0)
+       )
+       (call relay ("op" "concat_strings") ["hash:" module_hash0] dependency)
+      )
+      (ap dependency $dependencies)
+     )
+     (fold $modules m
+      (seq
+       (seq
+        (call relay ("op" "concat_strings") ["hash:" m] prefixed_hash)
+        (ap prefixed_hash $dependencies)
+       )
+       (next m)
+      )
+     )
+    )
+    (call relay ("dist" "make_blueprint") [service_name $dependencies] blueprint)
+   )
+   (call relay ("dist" "add_blueprint") [blueprint] blueprint_id)
+  )
+  (call relay ("srv" "create") [blueprint_id] service_id)
+ )
+ (call %init_peer_id% ("callbackSrv" "response") [service_id $err])
+)

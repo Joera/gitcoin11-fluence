@@ -1,0 +1,13 @@
+{
+  "name": "public-record.dao",
+  "version": "1.0.0",
+  "description": "decentralized aggregator for blockchain data",
+  "main": "",
+  "scripts": {
+    "local": "fldist --node-id 12D3KooWJ3m5DdUVQ8wf9L3WstLdY1vd8ogTjhg4fsqLeN1eNfmy --node-addr /ip4/127.0.0.1/tcp/9999/ws/p2p/12D3KooWJ3m5DdUVQ8wf9L3WstLdY1vd8ogTjhg4fsqLeN1eNfmy run_air -p air-scripts/rebirth.activate.air -d '{ }' --generated",
+    "localmodules": "fldist get_modules --node-id 12D3KooWJ3m5DdUVQ8wf9L3WstLdY1vd8ogTjhg4fsqLeN1eNfmy --node-addr /ip4/127.0.0.1/tcp/9999/ws/p2p/12D3KooWJ3m5DdUVQ8wf9L3WstLdY1vd8ogTjhg4fsqLeN1eNfmy --pretty",
+    "compile": "aqua -i aqua-scripts -o air-scripts --air --no-xor --no-relay"
+  },
+  "author": "",
+  "license": "ISC"
+}

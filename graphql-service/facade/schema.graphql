@@ -1,0 +1,122 @@
+enum ProposalStatus {
+  PENDING
+  ACTIVE
+  CANCELLED
+  QUEUED
+  EXECUTED
+}
+
+type Query {
+
+    id: ID!
+
+    referendum: Referendum!
+}
+
+type TokenHolder @entity {
+  "A TokenHolder is any address that holds any amount of Uniswap Tokens, the id used is the blockchain address."
+  id: ID!
+
+  "Delegate address of the token holder which will participate in votings. Delegates don't need to hold any tokens and can even be the token holder itself."
+  delegate: Delegate
+
+  "Uniswap Token balance of this address expressed in the smallest unit of the UniswapToken"
+  tokenBalanceRaw: Int!
+
+  "Uniswap Token balance of this address expressed as a Int normalized value for the Uniswap Token"
+  tokenBalance: Int!
+
+  "Total amount of Uniswap Token ever held by this address expressed in the smallest unit of the UniswapToken"
+  totalTokensHeldRaw: Int!
+
+  "Total amount of Uniswap Token ever held by this address expressed as a Int normalized value for the Uniswap Token"
+  totalTokensHeld: Int!
+}
+
+type Delegate @entity {
+  "A Delegate is any address that has been delegated with voting tokens by a token holder, id is the blockchain address of said delegate"
+  id: ID!
+
+  "Amount of votes delegated to this delegate to be used on proposal votings expressed in the smallest unit of the UniswapToken"
+  delegatedVotesRaw: String!
+
+  "Amount of votes delegated to this delegate to be used on proposal votings expressed as a Int normalized value for the Uniswap Token"
+  delegatedVotes: String!
+
+  tokenHoldersRepresentedAmount: String!
+
+   "Votes that a delegate has made in different proposals"
+     votes: [Vote!]! @derivedFrom(field: "voter")
+
+     "Proposals that the delegate has created"
+     proposals: [Proposal!]! @derivedFrom(field: "proposer")
+}
+
+type Proposal  @entity {
+
+  id: ID!
+
+  proposer : Delegate!
+
+  "Targets data for the change"
+  targets: [String!]
+
+  "Values data for the change"
+  values: [Int!]
+
+  "Signature data for the change"
+  signatures: [String!]
+
+  "Call data for the change"
+  calldatas: [String!]
+
+  "String description of the change"
+  description: String!
+
+}
+
+type Referendum @entity {
+  "Internal proposal ID, in this implementation it seems to be a autoincremental id"
+    id: ID!
+
+    choices: [String!]
+
+    result: [Int!]
+
+    againstVotes : String!
+
+    forVotes : String!
+
+    proposal: Proposal!
+
+    "Block number from where the voting starts"
+    startBlock: String!
+
+    "Block number from where the voting ends"
+    endBlock: String!
+
+    "Votes associated to this proposal"
+    votes: [Vote!]! @derivedFrom(field: "referendum")
+
+
+}
+
+
+type Vote @entity {
+  "Delegate ID + Referendum ID"
+  id: ID!
+
+  "Amount of votes in favour or against expressed in the smallest unit of the UniswapToken"
+    votesRaw: String!
+
+  "Amount of votes in favour or against expressed as a Int normalized value for the Uniswap Token"
+    votes: String!
+
+ "Delegate that emitted the vote"
+  voter: Delegate!
+
+  choice: String!
+
+  "Proposal that is being voted on"
+  referendum: Referendum!
+}

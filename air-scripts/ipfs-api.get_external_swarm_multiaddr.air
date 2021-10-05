@@ -1,0 +1,7 @@
+(seq
+ (seq
+  (call %init_peer_id% ("getDataSrv" "node") [] node)
+  (call node ("aqua-ipfs" "get_external_swarm_multiaddr") [] result)
+ )
+ (call %init_peer_id% ("callbackSrv" "response") [result])
+)

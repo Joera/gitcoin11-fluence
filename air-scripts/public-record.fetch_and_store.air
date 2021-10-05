@@ -1,0 +1,40 @@
+(xor
+ (seq
+  (seq
+   (seq
+    (seq
+     (seq
+      (call %init_peer_id% ("getDataSrv" "-relay-") [] -relay-)
+      (call %init_peer_id% ("getDataSrv" "id") [] id)
+     )
+     (call -relay- ("op" "noop") [])
+    )
+    (xor
+     (seq
+      (seq
+       (seq
+        (seq
+         (call -relay- ("op" "noop") [])
+         (call "12D3KooWKx5psMGsAWAyT9WAXDGJN3eugQ7kdTg3V3vNG9Dpagpg" ("167c741d-b198-4744-83c8-3fe549e53290" "get_tip") ["ipld-tip" "https://eth-rinkeby.alchemyapi.io/v2/oDMoyeai5fTVQxfpjKQVJM3ltl1ap9z7"] tip)
+        )
+        (call "12D3KooWKx5psMGsAWAyT9WAXDGJN3eugQ7kdTg3V3vNG9Dpagpg" ("3f638269-ad6c-48b4-b6af-03e013d8ad1e" "get_subgraph") [id] new_item)
+       )
+       (call "12D3KooWKx5psMGsAWAyT9WAXDGJN3eugQ7kdTg3V3vNG9Dpagpg" ("37065252-3ea0-49d8-b652-79def2e92333" "update_tree") [tip new_item] root_cid)
+      )
+      (call "12D3KooWKx5psMGsAWAyT9WAXDGJN3eugQ7kdTg3V3vNG9Dpagpg" ("167c741d-b198-4744-83c8-3fe549e53290" "update_tip") ["ipld-tip" root_cid "https://eth-rinkeby.alchemyapi.io/v2/oDMoyeai5fTVQxfpjKQVJM3ltl1ap9z7"] res)
+     )
+     (seq
+      (call -relay- ("op" "noop") [])
+      (call %init_peer_id% ("errorHandlingSrv" "error") [%last_error% 1])
+     )
+    )
+   )
+   (call -relay- ("op" "noop") [])
+  )
+  (xor
+   (call %init_peer_id% ("callbackSrv" "response") [root_cid])
+   (call %init_peer_id% ("errorHandlingSrv" "error") [%last_error% 2])
+  )
+ )
+ (call %init_peer_id% ("errorHandlingSrv" "error") [%last_error% 3])
+)

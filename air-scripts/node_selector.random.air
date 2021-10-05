@@ -1,0 +1,7 @@
+(seq
+ (seq
+  (call "12D3KooWLPyuBWNjSD2ajdfYeNK9oAMWXaWbEYC94bCL6AfPVMUP" ("op" "string_to_b58") ["12D3KooWLPyuBWNjSD2ajdfYeNK9oAMWXaWbEYC94bCL6AfPVMUP"] k)
+  (call "12D3KooWLPyuBWNjSD2ajdfYeNK9oAMWXaWbEYC94bCL6AfPVMUP" ("kad" "neighborhood") [k [] []] nodes)
+ )
+ (call %init_peer_id% ("callbackSrv" "response") [nodes])
+)

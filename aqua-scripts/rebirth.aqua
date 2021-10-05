@@ -1,0 +1,49 @@
+import "builtin.aqua"
+import "ipfs.aqua"
+import "process.aqua"
+
+service FileReader("service-id"):
+    read_file: string -> string
+
+-- node 
+const LOCAL_NODE = "12D3KooWJ3m5DdUVQ8wf9L3WstLdY1vd8ogTjhg4fsqLeN1eNfmy"
+-- air 
+const PB_UPDATE_FILTER_AIR_CID = "QmTdLR4vWETywRXnfoi8iH9hjEd86WGBaj42HRfu4jMf3F"
+const PB_POLL_AIR_CID = "QmfNiuTBUanAiYBaWFpmmArSyaPbyPgqNhi1Jaf9uVnqUD"
+-- wasm 
+const FILE_READER_CID = "QmUD71rbLS7qw2LtdHgMHifqnnXxpkJHxRjEHq9jtveARQ"
+const CURL_ADAPTER_CID = "QmY8Qe375TJCMaAiskUZTfFTyABrULTgVrmW8sYQELFS5d"
+
+const REMOTE_IPFS_PEER = "/ip4/64.227.70.116/tcp/5001"
+
+func activate() -> string: -- IpfsGetResult, IpfsGetResult: 
+
+    on LOCAL_NODE:
+
+        update_filter <- Ipfs.get_from(PB_UPDATE_FILTER_AIR_CID, REMOTE_IPFS_PEER) 
+        polling <- Ipfs.get_from(PB_POLL_AIR_CID, REMOTE_IPFS_PEER) 
+
+        file_reader_service_id <- deploy_service(LOCAL_NODE, FILE_READER_CID, CURL_ADAPTER_CID, REMOTE_IPFS_PEER, "file_reader_facade", "file_reader_service")
+        FileReader file_reader_service_id
+        update_filter_air <- FileReader.read_file(update_filter.path)
+        polling_air <- FileReader.read_file(polling.path)
+
+
+        interval_15min: ?string
+        interval_15min <<- "900"
+
+        -- every 15 min update eth filter_id 
+        Script.add(update_filter_air, interval_15min) 
+
+        interval_1min: ?string
+        interval_1min <<- "60"
+
+        -- every minute poll for new election results 
+        Script.add(polling_air, interval_1min) 
+
+        remove_service(LOCAL_NODE, file_reader_service_id) 
+
+
+    <- "it's alive!" -- update_filter_air
+
+

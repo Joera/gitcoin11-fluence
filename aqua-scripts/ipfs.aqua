@@ -1,0 +1,31 @@
+data IpfsGetResult:
+  success: bool
+  error: string
+  path: string
+
+data IpfsMultiaddrResult:
+  success: bool
+  error: string
+  multiaddr: string
+
+data IpfsPutResult:
+  success: bool
+  error: string
+  hash: string
+
+data IpfsResult:
+  success: bool
+  error: string
+
+service Ipfs("aqua-ipfs"):
+  connect(multiaddr: string) -> IpfsResult
+  get(hash: string) -> IpfsGetResult
+  get_external_api_multiaddr() -> IpfsMultiaddrResult
+  get_external_swarm_multiaddr() -> IpfsMultiaddrResult
+  get_from(hash: string, external_multiaddr: string) -> IpfsGetResult
+  get_local_api_multiaddr() -> IpfsMultiaddrResult
+  put(file_path: string) -> IpfsPutResult
+  set_external_api_multiaddr(multiaddr: string) -> IpfsResult
+  set_external_swarm_multiaddr(multiaddr: string) -> IpfsResult
+  set_local_api_multiaddr(multiaddr: string) -> IpfsResult
+  set_timeout(timeout_sec: u64)  

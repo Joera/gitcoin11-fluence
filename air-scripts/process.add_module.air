@@ -1,0 +1,13 @@
+(seq
+ (seq
+  (seq
+   (seq
+    (call %init_peer_id% ("getDataSrv" "name") [] name)
+    (call %init_peer_id% ("getDataSrv" "path") [] path)
+   )
+   (call %init_peer_id% ("dist" "default_module_config") [name] config)
+  )
+  (call %init_peer_id% ("dist" "add_module_from_vault") [path config] module_hash)
+ )
+ (call %init_peer_id% ("callbackSrv" "response") [module_hash])
+)

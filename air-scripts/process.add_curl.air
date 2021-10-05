@@ -1,0 +1,7 @@
+(seq
+ (seq
+  (ap "curl" $curl)
+  (ap "/usr/bin/curl" $curl)
+ )
+ (call %init_peer_id% ("callbackSrv" "response") [$curl])
+)

@@ -1,0 +1,19 @@
+query ReferendumView($id: String!) {
+    referendum(id: $id) {
+      id
+      endBlock
+      forVotes
+      againstVotes
+      proposal {
+        id
+        description
+      }
+      votes {
+        id
+        votes
+        voter {
+          delegatedVotes
+        }
+      }
+    }
+}

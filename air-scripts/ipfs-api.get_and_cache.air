@@ -1,0 +1,35 @@
+(seq
+ (seq
+  (seq
+   (seq
+    (seq
+     (call %init_peer_id% ("getDataSrv" "node") [] node)
+     (call %init_peer_id% ("getDataSrv" "cid") [] cid)
+    )
+    (call %init_peer_id% ("getDataSrv" "from") [] from)
+   )
+   (call node ("aqua-ipfs" "get_from") [cid from] get)
+  )
+  (xor
+   (match get.$.success! true
+    (seq
+     (call node ("aqua-ipfs" "put") [get.$.path!] put)
+     (xor
+      (match put.$.success! true
+       (ap put.$.hash! $localCid)
+      )
+      (par
+       (call %init_peer_id% ("callbackSrv" "error") ["Ipfs.put failed" put.$.error!])
+       (null)
+      )
+     )
+    )
+   )
+   (par
+    (call %init_peer_id% ("callbackSrv" "error") ["Ipfs.get failed" get.$.error!])
+    (null)
+   )
+  )
+ )
+ (call %init_peer_id% ("callbackSrv" "response") [$localCid])
+)

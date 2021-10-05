@@ -1,0 +1,318 @@
+(seq
+ (seq
+  (seq
+   (seq
+    (seq
+     (seq
+      (seq
+       (seq
+        (seq
+         (seq
+          (seq
+           (seq
+            (seq
+             (seq
+              (seq
+               (seq
+                (seq
+                 (seq
+                  (seq
+                   (seq
+                    (seq
+                     (seq
+                      (seq
+                       (seq
+                        (seq
+                         (seq
+                          (seq
+                           (seq
+                            (seq
+                             (seq
+                              (seq
+                               (seq
+                                (seq
+                                 (seq
+                                  (seq
+                                   (seq
+                                    (call %init_peer_id% ("getDataSrv" "fluence_peer") [] fluence_peer)
+                                    (call %init_peer_id% ("getDataSrv" "ipfs_peer") [] ipfs_peer)
+                                   )
+                                   (call fluence_peer ("aqua-ipfs" "get_from") ["QmTsiEMdzFU29cRAqfmUMh9WbmJRFcFFrDHdWvNmXb8bzU" ipfs_peer] get_result)
+                                  )
+                                  (xor
+                                   (match get_result.$.success! true
+                                    (seq
+                                     (seq
+                                      (call fluence_peer ("dist" "default_module_config") ["ens_facade"] config)
+                                      (call fluence_peer ("dist" "add_module_from_vault") [get_result.$.path! config] module_hash)
+                                     )
+                                     (ap module_hash $modules)
+                                    )
+                                   )
+                                   (ap get_result.$.error! $err)
+                                  )
+                                 )
+                                 (call fluence_peer ("aqua-ipfs" "get_from") ["QmY8Qe375TJCMaAiskUZTfFTyABrULTgVrmW8sYQELFS5d" ipfs_peer] get_result0)
+                                )
+                                (ap 100 $mem_pages_count)
+                               )
+                               (call fluence_peer ("op" "array") ["curl" "/usr/bin/curl"] curl)
+                              )
+                              (call fluence_peer ("op" "array") [curl] mounted_binaries_array)
+                             )
+                             (ap mounted_binaries_array $mounted_binaries)
+                            )
+                            (call fluence_peer ("dist" "make_module_config") ["curl_adapter" $mem_pages_count [] [] [] [] $mounted_binaries []] config0)
+                           )
+                           (call fluence_peer ("dist" "add_module_from_vault") [get_result0.$.path! config0] module_hash0)
+                          )
+                          (call fluence_peer ("op" "concat_strings") ["hash:" module_hash0] dependency)
+                         )
+                         (ap dependency $dependencies)
+                        )
+                        (fold $modules m
+                         (seq
+                          (seq
+                           (call fluence_peer ("op" "concat_strings") ["hash:" m] prefixed_hash)
+                           (ap prefixed_hash $dependencies)
+                          )
+                          (next m)
+                         )
+                        )
+                       )
+                       (call fluence_peer ("dist" "make_blueprint") ["ens_service" $dependencies] blueprint)
+                      )
+                      (call fluence_peer ("dist" "add_blueprint") [blueprint] blueprint_id)
+                     )
+                     (call fluence_peer ("srv" "create") [blueprint_id] service_id)
+                    )
+                    (call fluence_peer ("aqua-ipfs" "get_from") ["Qmb6Z14DyMuBGVK1tdYLDXWuN984Q4Dj5qCHeQD2N13TmA" ipfs_peer] get_result1)
+                   )
+                   (xor
+                    (match get_result1.$.success! true
+                     (seq
+                      (seq
+                       (call fluence_peer ("dist" "default_module_config") ["event_facade"] config1)
+                       (call fluence_peer ("dist" "add_module_from_vault") [get_result1.$.path! config1] module_hash1)
+                      )
+                      (ap module_hash1 $modules0)
+                     )
+                    )
+                    (ap get_result1.$.error! $err0)
+                   )
+                  )
+                  (call fluence_peer ("aqua-ipfs" "get_from") ["QmY8Qe375TJCMaAiskUZTfFTyABrULTgVrmW8sYQELFS5d" ipfs_peer] get_result2)
+                 )
+                 (ap 100 $mem_pages_count0)
+                )
+                (call fluence_peer ("op" "array") ["curl" "/usr/bin/curl"] curl0)
+               )
+               (call fluence_peer ("op" "array") [curl0] mounted_binaries_array0)
+              )
+              (ap mounted_binaries_array0 $mounted_binaries0)
+             )
+             (call fluence_peer ("dist" "make_module_config") ["curl_adapter" $mem_pages_count0 [] [] [] [] $mounted_binaries0 []] config2)
+            )
+            (call fluence_peer ("dist" "add_module_from_vault") [get_result2.$.path! config2] module_hash2)
+           )
+           (call fluence_peer ("op" "concat_strings") ["hash:" module_hash2] dependency0)
+          )
+          (ap dependency0 $dependencies0)
+         )
+         (fold $modules0 m0
+          (seq
+           (seq
+            (call fluence_peer ("op" "concat_strings") ["hash:" m0] prefixed_hash0)
+            (ap prefixed_hash0 $dependencies0)
+           )
+           (next m0)
+          )
+         )
+        )
+        (call fluence_peer ("dist" "make_blueprint") ["event_service" $dependencies0] blueprint0)
+       )
+       (call fluence_peer ("dist" "add_blueprint") [blueprint0] blueprint_id1)
+      )
+      (call fluence_peer ("srv" "create") [blueprint_id1] service_id0)
+     )
+     (call fluence_peer (service_id "get_record") ["pr-alfa-event-filter" "https://eth-rinkeby.alchemyapi.io/v2/oDMoyeai5fTVQxfpjKQVJM3ltl1ap9z7"] filter_id)
+    )
+    (call fluence_peer (service_id0 "check_filter") [filter_id] id)
+   )
+   (xor
+    (match id "0"
+     (seq
+      (seq
+       (ap "No new items" $report)
+       (call fluence_peer ("srv" "remove") [service_id0])
+      )
+      (call fluence_peer ("srv" "remove") [service_id])
+     )
+    )
+    (null)
+   )
+  )
+  (xor
+   (mismatch id "0"
+    (seq
+     (seq
+      (seq
+       (seq
+        (seq
+         (seq
+          (seq
+           (seq
+            (seq
+             (seq
+              (seq
+               (seq
+                (seq
+                 (seq
+                  (seq
+                   (seq
+                    (seq
+                     (seq
+                      (seq
+                       (seq
+                        (seq
+                         (seq
+                          (seq
+                           (seq
+                            (seq
+                             (seq
+                              (seq
+                               (seq
+                                (seq
+                                 (seq
+                                  (seq
+                                   (seq
+                                    (seq
+                                     (seq
+                                      (seq
+                                       (seq
+                                        (seq
+                                         (seq
+                                          (seq
+                                           (call fluence_peer ("aqua-ipfs" "get_from") ["QmNZaNtJ698UqLRsUgpkd3dNyLN6PWQE56bJ2JxdByHHo5" ipfs_peer] get_result3)
+                                           (xor
+                                            (match get_result3.$.success! true
+                                             (seq
+                                              (seq
+                                               (call fluence_peer ("dist" "default_module_config") ["graph_facade"] config3)
+                                               (call fluence_peer ("dist" "add_module_from_vault") [get_result3.$.path! config3] module_hash3)
+                                              )
+                                              (ap module_hash3 $modules1)
+                                             )
+                                            )
+                                            (ap get_result3.$.error! $err1)
+                                           )
+                                          )
+                                          (call fluence_peer ("aqua-ipfs" "get_from") ["QmY8Qe375TJCMaAiskUZTfFTyABrULTgVrmW8sYQELFS5d" ipfs_peer] get_result4)
+                                         )
+                                         (ap 100 $mem_pages_count1)
+                                        )
+                                        (call fluence_peer ("op" "array") ["curl" "/usr/bin/curl"] curl1)
+                                       )
+                                       (call fluence_peer ("op" "array") [curl1] mounted_binaries_array1)
+                                      )
+                                      (ap mounted_binaries_array1 $mounted_binaries1)
+                                     )
+                                     (call fluence_peer ("dist" "make_module_config") ["curl_adapter" $mem_pages_count1 [] [] [] [] $mounted_binaries1 []] config4)
+                                    )
+                                    (call fluence_peer ("dist" "add_module_from_vault") [get_result4.$.path! config4] module_hash4)
+                                   )
+                                   (call fluence_peer ("op" "concat_strings") ["hash:" module_hash4] dependency1)
+                                  )
+                                  (ap dependency1 $dependencies1)
+                                 )
+                                 (fold $modules1 m1
+                                  (seq
+                                   (seq
+                                    (call fluence_peer ("op" "concat_strings") ["hash:" m1] prefixed_hash1)
+                                    (ap prefixed_hash1 $dependencies1)
+                                   )
+                                   (next m1)
+                                  )
+                                 )
+                                )
+                                (call fluence_peer ("dist" "make_blueprint") ["graph_service" $dependencies1] blueprint1)
+                               )
+                               (call fluence_peer ("dist" "add_blueprint") [blueprint1] blueprint_id2)
+                              )
+                              (call fluence_peer ("srv" "create") [blueprint_id2] service_id1)
+                             )
+                             (call fluence_peer ("aqua-ipfs" "get_from") ["QmWQnmqcTMwvpTAXndxv4wSiFNUH2BNXHPkT9VBPLkXUMp" ipfs_peer] get_result5)
+                            )
+                            (xor
+                             (match get_result5.$.success! true
+                              (seq
+                               (seq
+                                (call fluence_peer ("dist" "default_module_config") ["ipld_facade"] config5)
+                                (call fluence_peer ("dist" "add_module_from_vault") [get_result5.$.path! config5] module_hash5)
+                               )
+                               (ap module_hash5 $modules2)
+                              )
+                             )
+                             (ap get_result5.$.error! $err2)
+                            )
+                           )
+                           (call fluence_peer ("aqua-ipfs" "get_from") ["QmY8Qe375TJCMaAiskUZTfFTyABrULTgVrmW8sYQELFS5d" ipfs_peer] get_result6)
+                          )
+                          (ap 100 $mem_pages_count2)
+                         )
+                         (call fluence_peer ("op" "array") ["curl" "/usr/bin/curl"] curl2)
+                        )
+                        (call fluence_peer ("op" "array") [curl2] mounted_binaries_array2)
+                       )
+                       (ap mounted_binaries_array2 $mounted_binaries2)
+                      )
+                      (call fluence_peer ("dist" "make_module_config") ["curl_adapter" $mem_pages_count2 [] [] [] [] $mounted_binaries2 []] config6)
+                     )
+                     (call fluence_peer ("dist" "add_module_from_vault") [get_result6.$.path! config6] module_hash6)
+                    )
+                    (call fluence_peer ("op" "concat_strings") ["hash:" module_hash6] dependency2)
+                   )
+                   (ap dependency2 $dependencies2)
+                  )
+                  (fold $modules2 m2
+                   (seq
+                    (seq
+                     (call fluence_peer ("op" "concat_strings") ["hash:" m2] prefixed_hash2)
+                     (ap prefixed_hash2 $dependencies2)
+                    )
+                    (next m2)
+                   )
+                  )
+                 )
+                 (call fluence_peer ("dist" "make_blueprint") ["ipld_service" $dependencies2] blueprint2)
+                )
+                (call fluence_peer ("dist" "add_blueprint") [blueprint2] blueprint_id3)
+               )
+               (call fluence_peer ("srv" "create") [blueprint_id3] service_id2)
+              )
+              (call fluence_peer (service_id "get_record") ["ipld-tip" "https://eth-rinkeby.alchemyapi.io/v2/oDMoyeai5fTVQxfpjKQVJM3ltl1ap9z7"] tip)
+             )
+             (call fluence_peer (service_id1 "get_subgraph") [id] new_item)
+            )
+            (call fluence_peer (service_id2 "update_tree") [tip new_item] root_cid)
+           )
+           (call fluence_peer (service_id "update_record") ["ipld-tip" root_cid "https://eth-rinkeby.alchemyapi.io/v2/oDMoyeai5fTVQxfpjKQVJM3ltl1ap9z7"] res)
+          )
+          (ap id $report)
+         )
+         (ap root_cid $report)
+        )
+        (call fluence_peer ("srv" "remove") [service_id0])
+       )
+       (call fluence_peer ("srv" "remove") [service_id])
+      )
+      (call fluence_peer ("srv" "remove") [service_id1])
+     )
+     (call fluence_peer ("srv" "remove") [service_id2])
+    )
+   )
+   (null)
+  )
+ )
+ (call %init_peer_id% ("callbackSrv" "response") [$report])
+)

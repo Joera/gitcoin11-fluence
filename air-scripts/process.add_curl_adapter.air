@@ -1,0 +1,28 @@
+(seq
+ (seq
+  (seq
+   (seq
+    (seq
+     (seq
+      (seq
+       (seq
+        (seq
+         (call %init_peer_id% ("getDataSrv" "curl_adapter_cid") [] curl_adapter_cid)
+         (call %init_peer_id% ("getDataSrv" "ipfs") [] ipfs)
+        )
+        (call %init_peer_id% ("aqua-ipfs" "get_from") [curl_adapter_cid ipfs] get_result)
+       )
+       (ap 100 $mem_pages_count)
+      )
+      (call %init_peer_id% ("op" "array") ["curl" "/usr/bin/curl"] curl)
+     )
+     (call %init_peer_id% ("op" "array") [curl] mounted_binaries_array)
+    )
+    (ap mounted_binaries_array $mounted_binaries)
+   )
+   (call %init_peer_id% ("dist" "make_module_config") ["curl_adapter" $mem_pages_count [] [] [] [] $mounted_binaries []] config)
+  )
+  (call %init_peer_id% ("dist" "add_module_from_vault") [get_result.$.path! config] module_hash)
+ )
+ (call %init_peer_id% ("callbackSrv" "response") [module_hash])
+)

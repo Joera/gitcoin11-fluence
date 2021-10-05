@@ -1,0 +1,110 @@
+import "builtin.aqua"
+import "process.aqua"
+import "ipfs"
+import "ipfs-api"
+
+service EventService("service-id"):
+    check_filter: string -> string
+    create_filter() -> string
+
+service EnsService("service-id"):
+    get_record: string, string -> string
+    update_record: string, string, string -> string
+
+service GraphqlService("service-id"):
+    get_subgraph: string -> string
+
+service IpldService("service-id"):
+    update_tree: string, string -> string
+
+const ETH_PROVIDER_URL = "https://eth-rinkeby.alchemyapi.io/v2/oDMoyeai5fTVQxfpjKQVJM3ltl1ap9z7"
+const TIP_KEY = "ipld-tip"
+const FILTER_ID_KEY = "pr-alfa-event-filter"
+
+const FLUENCE_NODE = "12D3KooWJ3m5DdUVQ8wf9L3WstLdY1vd8ogTjhg4fsqLeN1eNfmy"
+
+const CURL_ADAPTER_CID = "QmY8Qe375TJCMaAiskUZTfFTyABrULTgVrmW8sYQELFS5d"
+const EVENT_FACADE_CID = "Qmb6Z14DyMuBGVK1tdYLDXWuN984Q4Dj5qCHeQD2N13TmA"
+const ENS_FACADE_CID = "QmTsiEMdzFU29cRAqfmUMh9WbmJRFcFFrDHdWvNmXb8bzU"
+const GRAPH_FACADE_CID = "QmNZaNtJ698UqLRsUgpkd3dNyLN6PWQE56bJ2JxdByHHo5"
+const IPLD_FACADE_CID = "QmWQnmqcTMwvpTAXndxv4wSiFNUH2BNXHPkT9VBPLkXUMp"
+
+const REMOTE_IPFS_PEER = "/ip4/64.227.70.116/tcp/5001"
+
+
+func poll() -> *string: 
+
+
+  -- select random node 
+
+  -- does this have a persistent memory? 
+  --if so  -- make it call an api to get priv key ... do something clever to approve that 
+
+  -- what about the particle? 
+ 
+
+  on FLUENCE_NODE:
+
+   -- local_ipfs <- Ipfs.get_local_api_multiaddr()
+
+    ens_service_id <- deploy_service(FLUENCE_NODE, ENS_FACADE_CID, CURL_ADAPTER_CID, REMOTE_IPFS_PEER, "ens_facade", "ens_service")
+    event_service_id <- deploy_service(FLUENCE_NODE, EVENT_FACADE_CID, CURL_ADAPTER_CID, REMOTE_IPFS_PEER, "event_facade", "event_service")
+
+    EnsService ens_service_id
+    filter_id <- EnsService.get_record(FILTER_ID_KEY, ETH_PROVIDER_URL)
+   
+    EventService event_service_id
+    id  <- EventService.check_filter(filter_id)
+
+    report: *string
+    
+    if id == "0": 
+
+      report <<- "No new items"
+      remove_service(FLUENCE_NODE, event_service_id) 
+      remove_service(FLUENCE_NODE, ens_service_id) 
+
+    if id != "0": 
+
+      graph_service_id <- deploy_service(FLUENCE_NODE, GRAPH_FACADE_CID, CURL_ADAPTER_CID, REMOTE_IPFS_PEER, "graph_facade", "graph_service")
+      ipld_service_id <- deploy_service(FLUENCE_NODE, IPLD_FACADE_CID, CURL_ADAPTER_CID, REMOTE_IPFS_PEER, "ipld_facade", "ipld_service")
+
+      EnsService ens_service_id
+      tip <- EnsService.get_record(TIP_KEY, ETH_PROVIDER_URL)
+
+      GraphqlService graph_service_id
+      new_item <- GraphqlService.get_subgraph(id)
+
+      IpldService ipld_service_id
+      root_cid <- IpldService.update_tree(tip, new_item)
+
+      res <- EnsService.update_record(TIP_KEY, root_cid, ETH_PROVIDER_URL)
+
+      report <<- id
+      report <<- root_cid
+
+      remove_service(FLUENCE_NODE, event_service_id) 
+      remove_service(FLUENCE_NODE, ens_service_id) 
+      remove_service(FLUENCE_NODE, graph_service_id) 
+      remove_service(FLUENCE_NODE, ipld_service_id) 
+
+  <- report
+
+func update_filter() -> string, string: 
+
+  on FLUENCE_NODE: 
+
+      ens_service_id, err <- deploy_service(FLUENCE_NODE, ENS_FACADE_CID, CURL_ADAPTER_CID, REMOTE_IPFS_PEER, "ens_facade", "ens_service")
+      event_service_id <- deploy_service(FLUENCE_NODE, EVENT_FACADE_CID, CURL_ADAPTER_CID, REMOTE_IPFS_PEER, "event_facade", "event_service")
+
+      EventService event_service_id
+      filter_id  <- EventService.create_filter()
+
+      EnsService ens_service_id
+      res <- EnsService.update_record(FILTER_ID_KEY, filter_id, ETH_PROVIDER_URL)
+
+      remove_service(FLUENCE_NODE, event_service_id) 
+      remove_service(FLUENCE_NODE, ens_service_id) 
+
+
+  <- filter_id, res

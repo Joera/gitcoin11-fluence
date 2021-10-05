@@ -1,0 +1,10 @@
+(seq
+ (seq
+  (seq
+   (call %init_peer_id% ("getDataSrv" "node") [] node)
+   (call %init_peer_id% ("getDataSrv" "path") [] path)
+  )
+  (call node ("aqua-ipfs" "put") [path] result)
+ )
+ (call %init_peer_id% ("callbackSrv" "response") [result])
+)

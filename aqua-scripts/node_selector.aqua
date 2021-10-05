@@ -1,0 +1,12 @@
+import "builtin.aqua"
+
+const LOCAL_NODE = "12D3KooWLPyuBWNjSD2ajdfYeNK9oAMWXaWbEYC94bCL6AfPVMUP"
+
+func random() -> []string: 
+
+    on LOCAL_NODE:
+
+        k <- Op.string_to_b58(LOCAL_NODE)
+        nodes <- Kademlia.neighborhood(k, nil, nil)
+
+    <- nodes 

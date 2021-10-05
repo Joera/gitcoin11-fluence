@@ -1,0 +1,244 @@
+(xor
+ (seq
+  (seq
+   (seq
+    (seq
+     (call %init_peer_id% ("getDataSrv" "-relay-") [] -relay-)
+     (call -relay- ("op" "noop") [])
+    )
+    (xor
+     (seq
+      (seq
+       (seq
+        (seq
+         (seq
+          (seq
+           (seq
+            (seq
+             (seq
+              (seq
+               (call "12D3KooWKx5psMGsAWAyT9WAXDGJN3eugQ7kdTg3V3vNG9Dpagpg" ("aqua-ipfs" "get_local_api_multiaddr") [] local_ipfs)
+               (xor
+                (seq
+                 (seq
+                  (seq
+                   (seq
+                    (seq
+                     (seq
+                      (call "12D3KooWKx5psMGsAWAyT9WAXDGJN3eugQ7kdTg3V3vNG9Dpagpg" ("aqua-ipfs" "get_from") ["QmfRbArEA6jix1BRUuRR638tE39LpezgZn2scHES1ZAmpc" local_ipfs.$.multiaddr!] get_result)
+                      (xor
+                       (match get_result.$.success! true
+                        (xor
+                         (seq
+                          (seq
+                           (call "12D3KooWKx5psMGsAWAyT9WAXDGJN3eugQ7kdTg3V3vNG9Dpagpg" ("dist" "default_module_config") ["ens_facade"] config)
+                           (call "12D3KooWKx5psMGsAWAyT9WAXDGJN3eugQ7kdTg3V3vNG9Dpagpg" ("dist" "add_module_from_vault") [get_result.$.path! config] module_hash)
+                          )
+                          (ap module_hash $modules)
+                         )
+                         (seq
+                          (seq
+                           (call -relay- ("op" "noop") [])
+                           (call %init_peer_id% ("errorHandlingSrv" "error") [%last_error% 1])
+                          )
+                          (call -relay- ("op" "noop") [])
+                         )
+                        )
+                       )
+                       (ap get_result.$.error! $err)
+                      )
+                     )
+                     (ap "hash:ecfdea19d9ece96256d484069dc69f40c58c9db52a618d275f9a9b1fc9ad8f52" $dependencies)
+                    )
+                    (fold $modules m
+                     (seq
+                      (seq
+                       (call "12D3KooWKx5psMGsAWAyT9WAXDGJN3eugQ7kdTg3V3vNG9Dpagpg" ("op" "concat_strings") ["hash:" m] prefixed_hash)
+                       (ap prefixed_hash $dependencies)
+                      )
+                      (next m)
+                     )
+                    )
+                   )
+                   (call "12D3KooWKx5psMGsAWAyT9WAXDGJN3eugQ7kdTg3V3vNG9Dpagpg" ("dist" "make_blueprint") ["ens_service" $dependencies] blueprint)
+                  )
+                  (call "12D3KooWKx5psMGsAWAyT9WAXDGJN3eugQ7kdTg3V3vNG9Dpagpg" ("dist" "add_blueprint") [blueprint] blueprint_id)
+                 )
+                 (call "12D3KooWKx5psMGsAWAyT9WAXDGJN3eugQ7kdTg3V3vNG9Dpagpg" ("srv" "create") [blueprint_id] service_id)
+                )
+                (seq
+                 (seq
+                  (call -relay- ("op" "noop") [])
+                  (call %init_peer_id% ("errorHandlingSrv" "error") [%last_error% 2])
+                 )
+                 (call -relay- ("op" "noop") [])
+                )
+               )
+              )
+              (xor
+               (seq
+                (seq
+                 (seq
+                  (seq
+                   (seq
+                    (seq
+                     (call "12D3KooWKx5psMGsAWAyT9WAXDGJN3eugQ7kdTg3V3vNG9Dpagpg" ("aqua-ipfs" "get_from") ["QmNZaNtJ698UqLRsUgpkd3dNyLN6PWQE56bJ2JxdByHHo5" local_ipfs.$.multiaddr!] get_result0)
+                     (xor
+                      (match get_result0.$.success! true
+                       (xor
+                        (seq
+                         (seq
+                          (call "12D3KooWKx5psMGsAWAyT9WAXDGJN3eugQ7kdTg3V3vNG9Dpagpg" ("dist" "default_module_config") ["graph_facade"] config0)
+                          (call "12D3KooWKx5psMGsAWAyT9WAXDGJN3eugQ7kdTg3V3vNG9Dpagpg" ("dist" "add_module_from_vault") [get_result0.$.path! config0] module_hash0)
+                         )
+                         (ap module_hash0 $modules0)
+                        )
+                        (seq
+                         (seq
+                          (call -relay- ("op" "noop") [])
+                          (call %init_peer_id% ("errorHandlingSrv" "error") [%last_error% 3])
+                         )
+                         (call -relay- ("op" "noop") [])
+                        )
+                       )
+                      )
+                      (ap get_result0.$.error! $err0)
+                     )
+                    )
+                    (ap "hash:ecfdea19d9ece96256d484069dc69f40c58c9db52a618d275f9a9b1fc9ad8f52" $dependencies0)
+                   )
+                   (fold $modules0 m0
+                    (seq
+                     (seq
+                      (call "12D3KooWKx5psMGsAWAyT9WAXDGJN3eugQ7kdTg3V3vNG9Dpagpg" ("op" "concat_strings") ["hash:" m0] prefixed_hash0)
+                      (ap prefixed_hash0 $dependencies0)
+                     )
+                     (next m0)
+                    )
+                   )
+                  )
+                  (call "12D3KooWKx5psMGsAWAyT9WAXDGJN3eugQ7kdTg3V3vNG9Dpagpg" ("dist" "make_blueprint") ["graph_service" $dependencies0] blueprint0)
+                 )
+                 (call "12D3KooWKx5psMGsAWAyT9WAXDGJN3eugQ7kdTg3V3vNG9Dpagpg" ("dist" "add_blueprint") [blueprint0] blueprint_id1)
+                )
+                (call "12D3KooWKx5psMGsAWAyT9WAXDGJN3eugQ7kdTg3V3vNG9Dpagpg" ("srv" "create") [blueprint_id1] service_id0)
+               )
+               (seq
+                (seq
+                 (call -relay- ("op" "noop") [])
+                 (call %init_peer_id% ("errorHandlingSrv" "error") [%last_error% 4])
+                )
+                (call -relay- ("op" "noop") [])
+               )
+              )
+             )
+             (xor
+              (seq
+               (seq
+                (seq
+                 (seq
+                  (seq
+                   (seq
+                    (call "12D3KooWKx5psMGsAWAyT9WAXDGJN3eugQ7kdTg3V3vNG9Dpagpg" ("aqua-ipfs" "get_from") ["QmQxWfrBkqASyL9CsniyXbgBpRQsRp6p6gBm6PGLw4diwi" local_ipfs.$.multiaddr!] get_result1)
+                    (xor
+                     (match get_result1.$.success! true
+                      (xor
+                       (seq
+                        (seq
+                         (call "12D3KooWKx5psMGsAWAyT9WAXDGJN3eugQ7kdTg3V3vNG9Dpagpg" ("dist" "default_module_config") ["ipld_facade"] config1)
+                         (call "12D3KooWKx5psMGsAWAyT9WAXDGJN3eugQ7kdTg3V3vNG9Dpagpg" ("dist" "add_module_from_vault") [get_result1.$.path! config1] module_hash1)
+                        )
+                        (ap module_hash1 $modules1)
+                       )
+                       (seq
+                        (seq
+                         (call -relay- ("op" "noop") [])
+                         (call %init_peer_id% ("errorHandlingSrv" "error") [%last_error% 5])
+                        )
+                        (call -relay- ("op" "noop") [])
+                       )
+                      )
+                     )
+                     (ap get_result1.$.error! $err1)
+                    )
+                   )
+                   (ap "hash:ecfdea19d9ece96256d484069dc69f40c58c9db52a618d275f9a9b1fc9ad8f52" $dependencies1)
+                  )
+                  (fold $modules1 m1
+                   (seq
+                    (seq
+                     (call "12D3KooWKx5psMGsAWAyT9WAXDGJN3eugQ7kdTg3V3vNG9Dpagpg" ("op" "concat_strings") ["hash:" m1] prefixed_hash1)
+                     (ap prefixed_hash1 $dependencies1)
+                    )
+                    (next m1)
+                   )
+                  )
+                 )
+                 (call "12D3KooWKx5psMGsAWAyT9WAXDGJN3eugQ7kdTg3V3vNG9Dpagpg" ("dist" "make_blueprint") ["ipld_service" $dependencies1] blueprint1)
+                )
+                (call "12D3KooWKx5psMGsAWAyT9WAXDGJN3eugQ7kdTg3V3vNG9Dpagpg" ("dist" "add_blueprint") [blueprint1] blueprint_id2)
+               )
+               (call "12D3KooWKx5psMGsAWAyT9WAXDGJN3eugQ7kdTg3V3vNG9Dpagpg" ("srv" "create") [blueprint_id2] service_id1)
+              )
+              (seq
+               (seq
+                (call -relay- ("op" "noop") [])
+                (call %init_peer_id% ("errorHandlingSrv" "error") [%last_error% 6])
+               )
+               (call -relay- ("op" "noop") [])
+              )
+             )
+            )
+            (call "12D3KooWKx5psMGsAWAyT9WAXDGJN3eugQ7kdTg3V3vNG9Dpagpg" (service_id "get_tip") ["ipld-tip" "https://eth-rinkeby.alchemyapi.io/v2/oDMoyeai5fTVQxfpjKQVJM3ltl1ap9z7"] tip)
+           )
+           (call "12D3KooWKx5psMGsAWAyT9WAXDGJN3eugQ7kdTg3V3vNG9Dpagpg" (service_id0 "get_subgraph") ["19"] new_item)
+          )
+          (call "12D3KooWKx5psMGsAWAyT9WAXDGJN3eugQ7kdTg3V3vNG9Dpagpg" (service_id1 "update_tree") [tip new_item] root_cid)
+         )
+         (call "12D3KooWKx5psMGsAWAyT9WAXDGJN3eugQ7kdTg3V3vNG9Dpagpg" (service_id "update_tip") ["ipld-tip" root_cid "https://eth-rinkeby.alchemyapi.io/v2/oDMoyeai5fTVQxfpjKQVJM3ltl1ap9z7"] res)
+        )
+        (xor
+         (call "12D3KooWKx5psMGsAWAyT9WAXDGJN3eugQ7kdTg3V3vNG9Dpagpg" ("srv" "remove") [service_id])
+         (seq
+          (seq
+           (call -relay- ("op" "noop") [])
+           (call %init_peer_id% ("errorHandlingSrv" "error") [%last_error% 7])
+          )
+          (call -relay- ("op" "noop") [])
+         )
+        )
+       )
+       (xor
+        (call "12D3KooWKx5psMGsAWAyT9WAXDGJN3eugQ7kdTg3V3vNG9Dpagpg" ("srv" "remove") [service_id0])
+        (seq
+         (seq
+          (call -relay- ("op" "noop") [])
+          (call %init_peer_id% ("errorHandlingSrv" "error") [%last_error% 8])
+         )
+         (call -relay- ("op" "noop") [])
+        )
+       )
+      )
+      (xor
+       (call "12D3KooWKx5psMGsAWAyT9WAXDGJN3eugQ7kdTg3V3vNG9Dpagpg" ("srv" "remove") [service_id1])
+       (seq
+        (call -relay- ("op" "noop") [])
+        (call %init_peer_id% ("errorHandlingSrv" "error") [%last_error% 9])
+       )
+      )
+     )
+     (seq
+      (call -relay- ("op" "noop") [])
+      (call %init_peer_id% ("errorHandlingSrv" "error") [%last_error% 10])
+     )
+    )
+   )
+   (call -relay- ("op" "noop") [])
+  )
+  (xor
+   (call %init_peer_id% ("callbackSrv" "response") [root_cid res])
+   (call %init_peer_id% ("errorHandlingSrv" "error") [%last_error% 11])
+  )
+ )
+ (call %init_peer_id% ("errorHandlingSrv" "error") [%last_error% 12])
+)
