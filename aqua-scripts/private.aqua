@@ -1,0 +1,52 @@
+import "builtin.aqua"
+import "process.aqua"
+
+service IdentityService("service-id"):
+    initiate() -> []string
+    test() -> string
+    sign_transaction_request: string -> string
+    
+service EnsService("service-id"):
+    get_record: string, string -> string
+    prepare_update: string, string, string, string, string -> string
+    make_update_request: string, string -> string
+
+const ETH_PROVIDER_URL = "https://eth-rinkeby.alchemyapi.io/v2/oDMoyeai5fTVQxfpjKQVJM3ltl1ap9z7"
+const FLUENCE_NODE = "12D3KooWT1A4Wj45viEY9b1jVMWXxQyocSGXAbiTvHFxAbfiZjHb"
+
+const CURL_ADAPTER_CID = "QmY8Qe375TJCMaAiskUZTfFTyABrULTgVrmW8sYQELFS5d"
+const LOCAL_STORAGE_CID = "QmdeQSspMHz7B7wQezDkJGxfWzghwUmpimC7t3t8aXBKve"
+const ENS_FACADE_CID = "QmWr6K7ExAZFVTWTeHQbgt9e6Qfzj8sya3PZBWwgaHaMhZ"
+const IDENTITY_FACADE_CID = "QmXre6pE7UCZg2knYB9Aqj4cUVGCBGctDLxyjztno6ZXs2"
+
+const REMOTE_IPFS_PEER = "/ip4/64.227.70.116/tcp/5001"
+
+
+func deploy_identity() -> string, string, string:
+
+    on FLUENCE_NODE:
+
+        identity_service_id <- deploy_service_with_storage(FLUENCE_NODE, IDENTITY_FACADE_CID, CURL_ADAPTER_CID, LOCAL_STORAGE_CID, REMOTE_IPFS_PEER, "id_facade", "id_service")
+
+        IdentityService identity_service_id
+        result <- IdentityService.initiate()
+
+    <- result!, identity_service_id, result!1
+
+func test(identity_service_id: string, sender: string, value: string) -> string:
+
+    on FLUENCE_NODE:
+
+        ens_service_id <- deploy_service(FLUENCE_NODE, ENS_FACADE_CID, CURL_ADAPTER_CID, REMOTE_IPFS_PEER, "ens_facade", "ens_service")
+
+        EnsService ens_service_id
+        tx_request <- EnsService.prepare_update(ETH_PROVIDER_URL, sender, "alpha.public-record.eth","notice", value)
+
+        IdentityService identity_service_id
+        signed_tx_request <- IdentityService.sign_transaction_request(tx_request)
+
+        result <- EnsService.make_update_request(ETH_PROVIDER_URL, signed_tx_request)
+
+        remove_service(FLUENCE_NODE, ens_service_id) 
+
+    <- result

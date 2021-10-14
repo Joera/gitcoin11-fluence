@@ -1,0 +1,9 @@
+{
+  "name": "local_storage",
+  "preopenedFiles": [
+    "/tmp"
+  ],
+  "mountedBinaries": {
+    "curl": "/usr/bin/curl"
+  }
+}

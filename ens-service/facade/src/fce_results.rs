@@ -58,25 +58,3 @@ impl From<Result<String>> for JsonRpcResult {
         }
     }
 }
-
-#[marine]
-#[derive(Debug)]
-pub struct TestResult {
-    pub test_passed: bool,
-    pub error: String,
-}
-
-impl From<Result<String>> for TestResult {
-    fn from(result: Result<String>) -> Self {
-        match result {
-            Ok(res) => Self {
-                test_passed: true,
-                error: res,
-            },
-            Err(err) => Self {
-                test_passed: false,
-                error: err,
-            },
-        }
-    }
-}

@@ -1,0 +1,1 @@
+/home/joera/Documents/chronicles/fluence/public-record/identity-service/local_storage/target/wasm32-wasi/release/local_storage.wasm: /home/joera/Documents/chronicles/fluence/public-record/identity-service/local_storage/src/main.rs

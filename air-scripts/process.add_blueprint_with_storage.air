@@ -1,0 +1,110 @@
+(seq
+ (seq
+  (seq
+   (seq
+    (seq
+     (seq
+      (seq
+       (seq
+        (seq
+         (seq
+          (seq
+           (seq
+            (seq
+             (seq
+              (seq
+               (seq
+                (seq
+                 (seq
+                  (seq
+                   (seq
+                    (seq
+                     (seq
+                      (seq
+                       (seq
+                        (seq
+                         (seq
+                          (seq
+                           (seq
+                            (seq
+                             (seq
+                              (seq
+                               (seq
+                                (call %init_peer_id% ("getDataSrv" "moduleName") [] moduleName)
+                                (call %init_peer_id% ("getDataSrv" "modules") [] modules-iter)
+                               )
+                               (fold modules-iter modules-item
+                                (seq
+                                 (ap modules-item $modules)
+                                 (next modules-item)
+                                )
+                               )
+                              )
+                              (call %init_peer_id% ("getDataSrv" "curl_adapter_cid") [] curl_adapter_cid)
+                             )
+                             (call %init_peer_id% ("getDataSrv" "local_storage_cid") [] local_storage_cid)
+                            )
+                            (call %init_peer_id% ("getDataSrv" "ipfs") [] ipfs)
+                           )
+                           (call %init_peer_id% ("aqua-ipfs" "get_from") [curl_adapter_cid ipfs] get_result)
+                          )
+                          (ap 100 $mem_pages_count)
+                         )
+                         (call %init_peer_id% ("op" "array") ["curl" "/usr/bin/curl"] curl)
+                        )
+                        (call %init_peer_id% ("op" "array") [curl] mounted_binaries_array)
+                       )
+                       (ap mounted_binaries_array $mounted_binaries)
+                      )
+                      (call %init_peer_id% ("dist" "make_module_config") ["curl_adapter" $mem_pages_count [] [] [] [] $mounted_binaries []] config)
+                     )
+                     (call %init_peer_id% ("dist" "add_module_from_vault") [get_result.$.path! config] module_hash)
+                    )
+                    (call %init_peer_id% ("op" "concat_strings") ["hash:" module_hash] dependency)
+                   )
+                   (ap dependency $dependencies)
+                  )
+                  (call %init_peer_id% ("aqua-ipfs" "get_from") [local_storage_cid ipfs] get_result0)
+                 )
+                 (ap 1 $mem_pages_count0)
+                )
+                (call %init_peer_id% ("op" "array") ["/tmp"] preopened_files_array)
+               )
+               (ap preopened_files_array $preopened_files)
+              )
+              (call %init_peer_id% ("op" "array") ["sites" "/tmp"] sites)
+             )
+             (call %init_peer_id% ("op" "array") [sites] mapped_dirs_array)
+            )
+            (ap mapped_dirs_array $mapped_dirs)
+           )
+           (call %init_peer_id% ("op" "array") ["curl" "/usr/bin/curl"] curl0)
+          )
+          (call %init_peer_id% ("op" "array") [curl0] mounted_binaries_array0)
+         )
+         (ap mounted_binaries_array0 $mounted_binaries0)
+        )
+        (call %init_peer_id% ("dist" "make_module_config") ["local_storage" $mem_pages_count0 [] $preopened_files [] $mapped_dirs $mounted_binaries0 []] config0)
+       )
+       (call %init_peer_id% ("dist" "add_module_from_vault") [get_result0.$.path! config0] module_hash0)
+      )
+      (call %init_peer_id% ("op" "concat_strings") ["hash:" module_hash0] dependency2)
+     )
+     (ap dependency2 $dependencies)
+    )
+    (fold $modules m
+     (seq
+      (seq
+       (call %init_peer_id% ("op" "concat_strings") ["hash:" m] prefixed_hash)
+       (ap prefixed_hash $dependencies)
+      )
+      (next m)
+     )
+    )
+   )
+   (call %init_peer_id% ("dist" "make_blueprint") [moduleName $dependencies] blueprint)
+  )
+  (call %init_peer_id% ("dist" "add_blueprint") [blueprint] blueprint_id)
+ )
+ (call %init_peer_id% ("callbackSrv" "response") [blueprint_id module_hash0])
+)

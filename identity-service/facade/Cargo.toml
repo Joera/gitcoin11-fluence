@@ -1,0 +1,21 @@
+[package]
+name = "facade"
+version = "0.1.0"
+authors = ["Fluence Labs"]
+edition = "2018"
+publish = false
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[[bin]]
+name = "facade"
+path = "src/main.rs"
+
+[dependencies]
+serde_json = "1.0.64"
+marine-rs-sdk = { version = "=0.6.11", features = ["logger"] }
+libsecp256k1 = "0.7.0"
+rand = "0.8.4"
+tiny-keccak = { version = "2.0.2", features = ["keccak"] }
+hex = "0.4.3"
+ethers-core = { git = "https://github.com/Joera/ethers-core-0.1.3" }

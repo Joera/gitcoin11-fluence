@@ -29,9 +29,14 @@ use marine_rs_sdk::WasmLoggerBuilder;
 
 
 mod ens_calls;
+mod ens_namehash;
+mod curl;
+
 mod eth_utils;
 mod fce_results;
 mod jsonrpc_helpers;
+
+
 
 pub(crate) type Result<T> = std::result::Result<T, T>;
 

@@ -23,3 +23,10 @@
     contents.unwrap()
 }
 
+#[marine]
+pub fn write_file(path: String) -> String {
+
+   let contents = fs::read_to_string(path);
+   contents.unwrap()
+}
+

@@ -1,0 +1,86 @@
+(seq
+ (seq
+  (seq
+   (seq
+    (seq
+     (seq
+      (seq
+       (seq
+        (seq
+         (seq
+          (seq
+           (seq
+            (seq
+             (seq
+              (seq
+               (seq
+                (seq
+                 (seq
+                  (seq
+                   (seq
+                    (seq
+                     (seq
+                      (call %init_peer_id% ("getDataSrv" "identity_service_id") [] identity_service_id)
+                      (call %init_peer_id% ("getDataSrv" "sender") [] sender)
+                     )
+                     (call %init_peer_id% ("getDataSrv" "value") [] value)
+                    )
+                    (call "12D3KooWT1A4Wj45viEY9b1jVMWXxQyocSGXAbiTvHFxAbfiZjHb" ("aqua-ipfs" "get_from") ["QmWr6K7ExAZFVTWTeHQbgt9e6Qfzj8sya3PZBWwgaHaMhZ" "/ip4/64.227.70.116/tcp/5001"] get_result)
+                   )
+                   (xor
+                    (match get_result.$.success! true
+                     (seq
+                      (seq
+                       (call "12D3KooWT1A4Wj45viEY9b1jVMWXxQyocSGXAbiTvHFxAbfiZjHb" ("dist" "default_module_config") ["ens_facade"] config)
+                       (call "12D3KooWT1A4Wj45viEY9b1jVMWXxQyocSGXAbiTvHFxAbfiZjHb" ("dist" "add_module_from_vault") [get_result.$.path! config] module_hash)
+                      )
+                      (ap module_hash $modules)
+                     )
+                    )
+                    (ap get_result.$.error! $err)
+                   )
+                  )
+                  (call "12D3KooWT1A4Wj45viEY9b1jVMWXxQyocSGXAbiTvHFxAbfiZjHb" ("aqua-ipfs" "get_from") ["QmY8Qe375TJCMaAiskUZTfFTyABrULTgVrmW8sYQELFS5d" "/ip4/64.227.70.116/tcp/5001"] get_result0)
+                 )
+                 (ap 100 $mem_pages_count)
+                )
+                (call "12D3KooWT1A4Wj45viEY9b1jVMWXxQyocSGXAbiTvHFxAbfiZjHb" ("op" "array") ["curl" "/usr/bin/curl"] curl)
+               )
+               (call "12D3KooWT1A4Wj45viEY9b1jVMWXxQyocSGXAbiTvHFxAbfiZjHb" ("op" "array") [curl] mounted_binaries_array)
+              )
+              (ap mounted_binaries_array $mounted_binaries)
+             )
+             (call "12D3KooWT1A4Wj45viEY9b1jVMWXxQyocSGXAbiTvHFxAbfiZjHb" ("dist" "make_module_config") ["curl_adapter" $mem_pages_count [] [] [] [] $mounted_binaries []] config0)
+            )
+            (call "12D3KooWT1A4Wj45viEY9b1jVMWXxQyocSGXAbiTvHFxAbfiZjHb" ("dist" "add_module_from_vault") [get_result0.$.path! config0] module_hash0)
+           )
+           (call "12D3KooWT1A4Wj45viEY9b1jVMWXxQyocSGXAbiTvHFxAbfiZjHb" ("op" "concat_strings") ["hash:" module_hash0] dependency)
+          )
+          (ap dependency $dependencies)
+         )
+         (fold $modules m
+          (seq
+           (seq
+            (call "12D3KooWT1A4Wj45viEY9b1jVMWXxQyocSGXAbiTvHFxAbfiZjHb" ("op" "concat_strings") ["hash:" m] prefixed_hash)
+            (ap prefixed_hash $dependencies)
+           )
+           (next m)
+          )
+         )
+        )
+        (call "12D3KooWT1A4Wj45viEY9b1jVMWXxQyocSGXAbiTvHFxAbfiZjHb" ("dist" "make_blueprint") ["ens_service" $dependencies] blueprint)
+       )
+       (call "12D3KooWT1A4Wj45viEY9b1jVMWXxQyocSGXAbiTvHFxAbfiZjHb" ("dist" "add_blueprint") [blueprint] blueprint_id)
+      )
+      (call "12D3KooWT1A4Wj45viEY9b1jVMWXxQyocSGXAbiTvHFxAbfiZjHb" ("srv" "create") [blueprint_id] service_id)
+     )
+     (call "12D3KooWT1A4Wj45viEY9b1jVMWXxQyocSGXAbiTvHFxAbfiZjHb" (service_id "prepare_update") ["https://eth-rinkeby.alchemyapi.io/v2/oDMoyeai5fTVQxfpjKQVJM3ltl1ap9z7" sender "alpha.public-record.eth" "notice" value] tx_request)
+    )
+    (call "12D3KooWT1A4Wj45viEY9b1jVMWXxQyocSGXAbiTvHFxAbfiZjHb" (identity_service_id "sign_transaction_request") [tx_request] signed_tx_request)
+   )
+   (call "12D3KooWT1A4Wj45viEY9b1jVMWXxQyocSGXAbiTvHFxAbfiZjHb" (service_id "make_update_request") ["https://eth-rinkeby.alchemyapi.io/v2/oDMoyeai5fTVQxfpjKQVJM3ltl1ap9z7" signed_tx_request] result)
+  )
+  (call "12D3KooWT1A4Wj45viEY9b1jVMWXxQyocSGXAbiTvHFxAbfiZjHb" ("srv" "remove") [service_id])
+ )
+ (call %init_peer_id% ("callbackSrv" "response") [result])
+)

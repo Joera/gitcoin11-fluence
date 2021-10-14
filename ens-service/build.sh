@@ -15,5 +15,6 @@ rm -f artifacts/*.wasm
 
 cp curl_adapter/target/wasm32-wasi/release/curl_adapter.wasm artifacts/
 cp facade/target/wasm32-wasi/release/facade.wasm artifacts/
-docker cp artifacts/facade.wasm fluence-ipfs:/opt/ens_service.wasm
-docker exec -ti fluence-ipfs ipfs add /opt/ens_service.wasm
+scp artifacts/facade.wasm root@gov:/opt/ens_service.wasm
+#docker cp artifacts/facade.wasm fluence-ipfs:/opt/ens_service.wasm
+#docker exec -ti fluence-ipfs ipfs add /opt/ens_service.wasm

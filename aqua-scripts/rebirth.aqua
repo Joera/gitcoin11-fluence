@@ -5,6 +5,9 @@ import "process.aqua"
 service FileReader("service-id"):
     read_file: string -> string
 
+service IdentityService("service-id"):
+    initiate() -> []string
+
 -- node 
 const LOCAL_NODE = "12D3KooWJ3m5DdUVQ8wf9L3WstLdY1vd8ogTjhg4fsqLeN1eNfmy"
 -- air 
@@ -14,15 +17,33 @@ const PB_POLL_AIR_CID = "QmfNiuTBUanAiYBaWFpmmArSyaPbyPgqNhi1Jaf9uVnqUD"
 const FILE_READER_CID = "QmUD71rbLS7qw2LtdHgMHifqnnXxpkJHxRjEHq9jtveARQ"
 const CURL_ADAPTER_CID = "QmY8Qe375TJCMaAiskUZTfFTyABrULTgVrmW8sYQELFS5d"
 
+const IDENTITY_SERVICE_CID = "QmcDPGakkT8n9i939s3X6S2aeasMN5kXmEYzK2B4ExhzWj"
+const LOCAL_STORAGE_CID = "QmdeQSspMHz7B7wQezDkJGxfWzghwUmpimC7t3t8aXBKve"
+
 const REMOTE_IPFS_PEER = "/ip4/64.227.70.116/tcp/5001"
+
+-- do this from frontend? ? ? ???? ???? ?? ?? 
+
+-- subgraph to ipld .. with ens 
+-- on a separate ipld tree - outside public-record 
+
+func init() -> string, string, string: 
+
+    on LOCAL_NODE:
+
+        -- create priv key 
+        -- create eth address 
+        -- write to env_db 
+
+        identity_service_id <- deploy_service_with_storage(LOCAL_NODE, IDENTITY_SERVICE_CID, CURL_ADAPTER_CID, LOCAL_STORAGE_CID, REMOTE_IPFS_PEER, "identity_facade", "identity_service")
+        IdentityService identity_service_id
+        result <- IdentityService.initiate()
+
+    <- result!, identity_service_id, result!1
 
 func activate() -> string: -- IpfsGetResult, IpfsGetResult: 
 
     on LOCAL_NODE:
-
-
-        -- create sql with env stuff .. inc priv key 
-        -- allow access only to ???? 
 
         update_filter <- Ipfs.get_from(PB_UPDATE_FILTER_AIR_CID, REMOTE_IPFS_PEER) 
         polling <- Ipfs.get_from(PB_POLL_AIR_CID, REMOTE_IPFS_PEER) 
@@ -37,13 +58,13 @@ func activate() -> string: -- IpfsGetResult, IpfsGetResult:
         interval_15min <<- "900"
 
         -- every 15 min update eth filter_id 
-        Script.add(update_filter_air, interval_15min) 
+      --  Script.add(update_filter_air, interval_15min) 
 
         interval_1min: ?string
         interval_1min <<- "60"
 
         -- every minute poll for new election results 
-        Script.add(polling_air, interval_1min) 
+      --  Script.add(polling_air, interval_1min) 
 
         remove_service(LOCAL_NODE, file_reader_service_id) 
 

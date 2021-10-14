@@ -1,0 +1,110 @@
+(seq
+ (seq
+  (seq
+   (seq
+    (seq
+     (seq
+      (seq
+       (seq
+        (seq
+         (seq
+          (seq
+           (seq
+            (seq
+             (seq
+              (seq
+               (seq
+                (seq
+                 (seq
+                  (seq
+                   (seq
+                    (seq
+                     (seq
+                      (seq
+                       (seq
+                        (seq
+                         (seq
+                          (seq
+                           (seq
+                            (seq
+                             (seq
+                              (call "12D3KooWJ3m5DdUVQ8wf9L3WstLdY1vd8ogTjhg4fsqLeN1eNfmy" ("aqua-ipfs" "get_from") ["QmcDPGakkT8n9i939s3X6S2aeasMN5kXmEYzK2B4ExhzWj" "/ip4/64.227.70.116/tcp/5001"] get_result)
+                              (xor
+                               (match get_result.$.success! true
+                                (seq
+                                 (seq
+                                  (call "12D3KooWJ3m5DdUVQ8wf9L3WstLdY1vd8ogTjhg4fsqLeN1eNfmy" ("dist" "default_module_config") ["identity_facade"] config)
+                                  (call "12D3KooWJ3m5DdUVQ8wf9L3WstLdY1vd8ogTjhg4fsqLeN1eNfmy" ("dist" "add_module_from_vault") [get_result.$.path! config] module_hash)
+                                 )
+                                 (ap module_hash $modules)
+                                )
+                               )
+                               (ap get_result.$.error! $err)
+                              )
+                             )
+                             (call "12D3KooWJ3m5DdUVQ8wf9L3WstLdY1vd8ogTjhg4fsqLeN1eNfmy" ("aqua-ipfs" "get_from") ["QmY8Qe375TJCMaAiskUZTfFTyABrULTgVrmW8sYQELFS5d" "/ip4/64.227.70.116/tcp/5001"] get_result0)
+                            )
+                            (ap 100 $mem_pages_count)
+                           )
+                           (call "12D3KooWJ3m5DdUVQ8wf9L3WstLdY1vd8ogTjhg4fsqLeN1eNfmy" ("op" "array") ["curl" "/usr/bin/curl"] curl)
+                          )
+                          (call "12D3KooWJ3m5DdUVQ8wf9L3WstLdY1vd8ogTjhg4fsqLeN1eNfmy" ("op" "array") [curl] mounted_binaries_array)
+                         )
+                         (ap mounted_binaries_array $mounted_binaries)
+                        )
+                        (call "12D3KooWJ3m5DdUVQ8wf9L3WstLdY1vd8ogTjhg4fsqLeN1eNfmy" ("dist" "make_module_config") ["curl_adapter" $mem_pages_count [] [] [] [] $mounted_binaries []] config0)
+                       )
+                       (call "12D3KooWJ3m5DdUVQ8wf9L3WstLdY1vd8ogTjhg4fsqLeN1eNfmy" ("dist" "add_module_from_vault") [get_result0.$.path! config0] module_hash0)
+                      )
+                      (call "12D3KooWJ3m5DdUVQ8wf9L3WstLdY1vd8ogTjhg4fsqLeN1eNfmy" ("op" "concat_strings") ["hash:" module_hash0] dependency)
+                     )
+                     (ap dependency $dependencies)
+                    )
+                    (call "12D3KooWJ3m5DdUVQ8wf9L3WstLdY1vd8ogTjhg4fsqLeN1eNfmy" ("aqua-ipfs" "get_from") ["QmdeQSspMHz7B7wQezDkJGxfWzghwUmpimC7t3t8aXBKve" "/ip4/64.227.70.116/tcp/5001"] get_result1)
+                   )
+                   (ap 1 $mem_pages_count0)
+                  )
+                  (call "12D3KooWJ3m5DdUVQ8wf9L3WstLdY1vd8ogTjhg4fsqLeN1eNfmy" ("op" "array") ["/tmp"] preopened_files_array)
+                 )
+                 (ap preopened_files_array $preopened_files)
+                )
+                (call "12D3KooWJ3m5DdUVQ8wf9L3WstLdY1vd8ogTjhg4fsqLeN1eNfmy" ("op" "array") ["sites" "/tmp"] sites)
+               )
+               (call "12D3KooWJ3m5DdUVQ8wf9L3WstLdY1vd8ogTjhg4fsqLeN1eNfmy" ("op" "array") [sites] mapped_dirs_array)
+              )
+              (ap mapped_dirs_array $mapped_dirs)
+             )
+             (call "12D3KooWJ3m5DdUVQ8wf9L3WstLdY1vd8ogTjhg4fsqLeN1eNfmy" ("op" "array") ["curl" "/usr/bin/curl"] curl0)
+            )
+            (call "12D3KooWJ3m5DdUVQ8wf9L3WstLdY1vd8ogTjhg4fsqLeN1eNfmy" ("op" "array") [curl0] mounted_binaries_array0)
+           )
+           (ap mounted_binaries_array0 $mounted_binaries0)
+          )
+          (call "12D3KooWJ3m5DdUVQ8wf9L3WstLdY1vd8ogTjhg4fsqLeN1eNfmy" ("dist" "make_module_config") ["local_storage" $mem_pages_count0 [] $preopened_files [] $mapped_dirs $mounted_binaries0 []] config1)
+         )
+         (call "12D3KooWJ3m5DdUVQ8wf9L3WstLdY1vd8ogTjhg4fsqLeN1eNfmy" ("dist" "add_module_from_vault") [get_result1.$.path! config1] module_hash1)
+        )
+        (call "12D3KooWJ3m5DdUVQ8wf9L3WstLdY1vd8ogTjhg4fsqLeN1eNfmy" ("op" "concat_strings") ["hash:" module_hash1] dependency2)
+       )
+       (ap dependency2 $dependencies)
+      )
+      (fold $modules m
+       (seq
+        (seq
+         (call "12D3KooWJ3m5DdUVQ8wf9L3WstLdY1vd8ogTjhg4fsqLeN1eNfmy" ("op" "concat_strings") ["hash:" m] prefixed_hash)
+         (ap prefixed_hash $dependencies)
+        )
+        (next m)
+       )
+      )
+     )
+     (call "12D3KooWJ3m5DdUVQ8wf9L3WstLdY1vd8ogTjhg4fsqLeN1eNfmy" ("dist" "make_blueprint") ["identity_service" $dependencies] blueprint)
+    )
+    (call "12D3KooWJ3m5DdUVQ8wf9L3WstLdY1vd8ogTjhg4fsqLeN1eNfmy" ("dist" "add_blueprint") [blueprint] blueprint_id)
+   )
+   (call "12D3KooWJ3m5DdUVQ8wf9L3WstLdY1vd8ogTjhg4fsqLeN1eNfmy" ("srv" "create") [blueprint_id] service_id)
+  )
+  (call "12D3KooWJ3m5DdUVQ8wf9L3WstLdY1vd8ogTjhg4fsqLeN1eNfmy" (service_id "initiate") [] result)
+ )
+ (call %init_peer_id% ("callbackSrv" "response") [result.$.[0]! service_id result.$.[1]!])
+)
