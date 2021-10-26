@@ -1,0 +1,93 @@
+(seq
+ (seq
+  (seq
+   (seq
+    (seq
+     (seq
+      (seq
+       (call "12D3KooWT1A4Wj45viEY9b1jVMWXxQyocSGXAbiTvHFxAbfiZjHb" ("aqua-ipfs" "get_from") ["QmaGzzBL7UgnRi59zYwxp4WnPRQpxzb8ohE9ikAydXvXbQ" "/ip4/64.227.70.116/tcp/5001"] signer_air)
+       (call "12D3KooWT1A4Wj45viEY9b1jVMWXxQyocSGXAbiTvHFxAbfiZjHb" ("aqua-ipfs" "get_from") ["QmUD71rbLS7qw2LtdHgMHifqnnXxpkJHxRjEHq9jtveARQ" "/ip4/64.227.70.116/tcp/5001"] get_result)
+      )
+      (ap get_result $ipfs_results)
+     )
+     (xor
+      (match get_result.$.path! ""
+       (ap "0" $service_id)
+      )
+      (xor
+       (match get_result.$.success! true
+        (seq
+         (seq
+          (seq
+           (seq
+            (seq
+             (seq
+              (seq
+               (seq
+                (seq
+                 (seq
+                  (seq
+                   (seq
+                    (seq
+                     (seq
+                      (seq
+                       (seq
+                        (call "12D3KooWT1A4Wj45viEY9b1jVMWXxQyocSGXAbiTvHFxAbfiZjHb" ("dist" "default_module_config") ["file_reader_facade"] config)
+                        (call "12D3KooWT1A4Wj45viEY9b1jVMWXxQyocSGXAbiTvHFxAbfiZjHb" ("dist" "add_module_from_vault") [get_result.$.path! config] module_hash)
+                       )
+                       (ap module_hash $modules)
+                      )
+                      (call "12D3KooWT1A4Wj45viEY9b1jVMWXxQyocSGXAbiTvHFxAbfiZjHb" ("aqua-ipfs" "get_from") ["QmbKBnJcwAZo5GvGn6yrkGnv2tvg1HLvSctPmCtwHbun3s" "/ip4/64.227.70.116/tcp/5001"] get_result0)
+                     )
+                     (ap 100 $mem_pages_count)
+                    )
+                    (call "12D3KooWT1A4Wj45viEY9b1jVMWXxQyocSGXAbiTvHFxAbfiZjHb" ("op" "array") ["curl" "/usr/bin/curl"] curl)
+                   )
+                   (call "12D3KooWT1A4Wj45viEY9b1jVMWXxQyocSGXAbiTvHFxAbfiZjHb" ("op" "array") [curl] mounted_binaries_array)
+                  )
+                  (ap mounted_binaries_array $mounted_binaries)
+                 )
+                 (call "12D3KooWT1A4Wj45viEY9b1jVMWXxQyocSGXAbiTvHFxAbfiZjHb" ("dist" "make_module_config") ["curl_adapter" $mem_pages_count [] [] [] [] $mounted_binaries []] config0)
+                )
+                (call "12D3KooWT1A4Wj45viEY9b1jVMWXxQyocSGXAbiTvHFxAbfiZjHb" ("dist" "add_module_from_vault") [get_result0.$.path! config0] module_hash0)
+               )
+               (call "12D3KooWT1A4Wj45viEY9b1jVMWXxQyocSGXAbiTvHFxAbfiZjHb" ("op" "concat_strings") ["hash:" module_hash0] dependency)
+              )
+              (ap dependency $dependencies)
+             )
+             (fold $modules m
+              (seq
+               (seq
+                (call "12D3KooWT1A4Wj45viEY9b1jVMWXxQyocSGXAbiTvHFxAbfiZjHb" ("op" "concat_strings") ["hash:" m] prefixed_hash)
+                (ap prefixed_hash $dependencies)
+               )
+               (next m)
+              )
+             )
+            )
+            (call "12D3KooWT1A4Wj45viEY9b1jVMWXxQyocSGXAbiTvHFxAbfiZjHb" ("dist" "make_blueprint") ["file_reader_service" $dependencies] blueprint)
+           )
+           (call "12D3KooWT1A4Wj45viEY9b1jVMWXxQyocSGXAbiTvHFxAbfiZjHb" ("dist" "add_blueprint") [blueprint] blueprint_id)
+          )
+          (call "12D3KooWT1A4Wj45viEY9b1jVMWXxQyocSGXAbiTvHFxAbfiZjHb" ("srv" "create") [blueprint_id] $service_id)
+         )
+         (xor
+          (mismatch "" ""
+           (call "12D3KooWT1A4Wj45viEY9b1jVMWXxQyocSGXAbiTvHFxAbfiZjHb" ("srv" "add_alias") ["" $service_id.$.[0]!])
+          )
+          (null)
+         )
+        )
+       )
+       (ap "0" $service_id)
+      )
+     )
+    )
+    (call "12D3KooWT1A4Wj45viEY9b1jVMWXxQyocSGXAbiTvHFxAbfiZjHb" ($service_id.$.[0]! "read_file") [signer_air.$.path!] test_signer)
+   )
+   (ap "60" $interval_1min)
+  )
+  (call "12D3KooWT1A4Wj45viEY9b1jVMWXxQyocSGXAbiTvHFxAbfiZjHb" ("script" "add") [test_signer $interval_1min] res)
+ )
+ (call %init_peer_id% ("callbackSrv" "response") [res])
+)

@@ -1,0 +1,7 @@
+(seq
+ (seq
+  (call %init_peer_id% ("getDataSrv" "service_id") [] service_id)
+  (call "12D3KooWT1A4Wj45viEY9b1jVMWXxQyocSGXAbiTvHFxAbfiZjHb" ("script" "remove") [service_id] res)
+ )
+ (call %init_peer_id% ("callbackSrv" "response") [res])
+)

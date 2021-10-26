@@ -1,0 +1,102 @@
+(seq
+ (seq
+  (seq
+   (seq
+    (seq
+     (seq
+      (seq
+       (seq
+        (seq
+         (seq
+          (call "12D3KooWT1A4Wj45viEY9b1jVMWXxQyocSGXAbiTvHFxAbfiZjHb" ("peer" "timestamp_sec") [] timestamp)
+          (call "12D3KooWT1A4Wj45viEY9b1jVMWXxQyocSGXAbiTvHFxAbfiZjHb" ("aqua-ipfs" "get_from") ["QmSd5KgG6wFwTiZmNc438Qw3DF7UMcumE7KCz8uFdkmLSg" "/ip4/64.227.70.116/tcp/5001"] get_result)
+         )
+         (ap get_result $ipfs_results0)
+        )
+        (xor
+         (match get_result.$.path! ""
+          (ap "0" $service_id)
+         )
+         (xor
+          (match get_result.$.success! true
+           (seq
+            (seq
+             (seq
+              (seq
+               (seq
+                (seq
+                 (seq
+                  (seq
+                   (seq
+                    (seq
+                     (seq
+                      (seq
+                       (seq
+                        (seq
+                         (seq
+                          (seq
+                           (call "12D3KooWT1A4Wj45viEY9b1jVMWXxQyocSGXAbiTvHFxAbfiZjHb" ("dist" "default_module_config") ["ens_facade"] config)
+                           (call "12D3KooWT1A4Wj45viEY9b1jVMWXxQyocSGXAbiTvHFxAbfiZjHb" ("dist" "add_module_from_vault") [get_result.$.path! config] module_hash)
+                          )
+                          (ap module_hash $modules)
+                         )
+                         (call "12D3KooWT1A4Wj45viEY9b1jVMWXxQyocSGXAbiTvHFxAbfiZjHb" ("aqua-ipfs" "get_from") ["QmbKBnJcwAZo5GvGn6yrkGnv2tvg1HLvSctPmCtwHbun3s" "/ip4/64.227.70.116/tcp/5001"] get_result0)
+                        )
+                        (ap 100 $mem_pages_count)
+                       )
+                       (call "12D3KooWT1A4Wj45viEY9b1jVMWXxQyocSGXAbiTvHFxAbfiZjHb" ("op" "array") ["curl" "/usr/bin/curl"] curl)
+                      )
+                      (call "12D3KooWT1A4Wj45viEY9b1jVMWXxQyocSGXAbiTvHFxAbfiZjHb" ("op" "array") [curl] mounted_binaries_array)
+                     )
+                     (ap mounted_binaries_array $mounted_binaries)
+                    )
+                    (call "12D3KooWT1A4Wj45viEY9b1jVMWXxQyocSGXAbiTvHFxAbfiZjHb" ("dist" "make_module_config") ["curl_adapter" $mem_pages_count [] [] [] [] $mounted_binaries []] config0)
+                   )
+                   (call "12D3KooWT1A4Wj45viEY9b1jVMWXxQyocSGXAbiTvHFxAbfiZjHb" ("dist" "add_module_from_vault") [get_result0.$.path! config0] module_hash0)
+                  )
+                  (call "12D3KooWT1A4Wj45viEY9b1jVMWXxQyocSGXAbiTvHFxAbfiZjHb" ("op" "concat_strings") ["hash:" module_hash0] dependency)
+                 )
+                 (ap dependency $dependencies)
+                )
+                (fold $modules m
+                 (seq
+                  (seq
+                   (call "12D3KooWT1A4Wj45viEY9b1jVMWXxQyocSGXAbiTvHFxAbfiZjHb" ("op" "concat_strings") ["hash:" m] prefixed_hash)
+                   (ap prefixed_hash $dependencies)
+                  )
+                  (next m)
+                 )
+                )
+               )
+               (call "12D3KooWT1A4Wj45viEY9b1jVMWXxQyocSGXAbiTvHFxAbfiZjHb" ("dist" "make_blueprint") ["ens_service" $dependencies] blueprint)
+              )
+              (call "12D3KooWT1A4Wj45viEY9b1jVMWXxQyocSGXAbiTvHFxAbfiZjHb" ("dist" "add_blueprint") [blueprint] blueprint_id)
+             )
+             (call "12D3KooWT1A4Wj45viEY9b1jVMWXxQyocSGXAbiTvHFxAbfiZjHb" ("srv" "create") [blueprint_id] $service_id)
+            )
+            (xor
+             (mismatch "" ""
+              (call "12D3KooWT1A4Wj45viEY9b1jVMWXxQyocSGXAbiTvHFxAbfiZjHb" ("srv" "add_alias") ["" $service_id.$.[0]!])
+             )
+             (null)
+            )
+           )
+          )
+          (ap "0" $service_id)
+         )
+        )
+       )
+       (call "12D3KooWT1A4Wj45viEY9b1jVMWXxQyocSGXAbiTvHFxAbfiZjHb" ($service_id.$.[0]! "get_record") ["signer_service_id" "https://eth-rinkeby.alchemyapi.io/v2/oDMoyeai5fTVQxfpjKQVJM3ltl1ap9z7" "alpha.public-record.eth"] signer_service_id)
+      )
+      (call "12D3KooWT1A4Wj45viEY9b1jVMWXxQyocSGXAbiTvHFxAbfiZjHb" (signer_service_id "address") [] sender)
+     )
+     (call "12D3KooWT1A4Wj45viEY9b1jVMWXxQyocSGXAbiTvHFxAbfiZjHb" ($service_id.$.[0]! "prepare_update_with_u64") ["https://eth-rinkeby.alchemyapi.io/v2/oDMoyeai5fTVQxfpjKQVJM3ltl1ap9z7" sender "alpha.public-record.eth" "notice" timestamp] tx_request)
+    )
+    (call "12D3KooWT1A4Wj45viEY9b1jVMWXxQyocSGXAbiTvHFxAbfiZjHb" (signer_service_id "sign_tx") [tx_request 4] signed_tx_request)
+   )
+   (call "12D3KooWT1A4Wj45viEY9b1jVMWXxQyocSGXAbiTvHFxAbfiZjHb" ($service_id.$.[0]! "make_update_request") ["https://eth-rinkeby.alchemyapi.io/v2/oDMoyeai5fTVQxfpjKQVJM3ltl1ap9z7" signed_tx_request] $result)
+  )
+  (call "12D3KooWT1A4Wj45viEY9b1jVMWXxQyocSGXAbiTvHFxAbfiZjHb" ("srv" "remove") [service_id])
+ )
+ (call %init_peer_id% ("callbackSrv" "response") [$service_id.$.[0]!])
+)

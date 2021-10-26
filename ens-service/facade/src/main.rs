@@ -32,6 +32,7 @@ mod ens_calls;
 mod ens_namehash;
 mod curl;
 
+mod eip1559_types;
 mod eth_utils;
 mod fce_results;
 mod jsonrpc_helpers;

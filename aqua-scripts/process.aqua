@@ -93,22 +93,30 @@ func add_blueprint(moduleName: string, modules: *string, curl_adapter_cid: strin
     <- blueprint_id, curl_adapter_hash
 
 -- Download single .wasm module from IPFS and create a service from it
-func deploy_service(relay: PeerId, facade_cid: string, curl_adapter_cid: string, ipfs: Multiaddr, module_name: string, service_name: string) -> string, *string:
+func deploy_service(relay: PeerId, facade_cid: string, curl_adapter_cid: string, ipfs: Multiaddr, module_name: string, service_name: string, alias: string) -> string, *IpfsGetResult:
   --  service_ids: *string
     modules: *string
-    err: *string
+    ipfs_results: *IpfsGetResult
+    service_id: *string
     on relay:
 
-        get_result <- Ipfs.get_from(facade_cid, ipfs)        
-        if get_result.success:
-            modules <- add_module(module_name, get_result.path)
-        else:
-            err <<-get_result.error
-                
-        blueprint_id, curl_adapter_hash <- add_blueprint(service_name, modules, curl_adapter_cid, ipfs)
-        service_id <- Srv.create(blueprint_id)
-    
-    <- service_id, err
+        get_result <- Ipfs.get_from(facade_cid, ipfs)   
+
+        ipfs_results <<- get_result
+
+        if get_result.path == "":      
+            service_id <<- "0"
+        else:      
+            if get_result.success:
+                modules <- add_module(module_name, get_result.path)
+                blueprint_id, curl_adapter_hash <- add_blueprint(service_name, modules, curl_adapter_cid, ipfs)
+                service_id <- Srv.create(blueprint_id)
+                if alias != "" :
+                    Srv.add_alias(alias, service_id!)
+            else:
+                service_id <<- "0"
+                  
+    <- service_id!, ipfs_results
 
 func add_blueprint_with_storage(moduleName: string, modules: *string, curl_adapter_cid: string, local_storage_cid: string, ipfs: Multiaddr) -> string, string:
     

@@ -1,0 +1,4 @@
+(seq
+ (call %init_peer_id% ("getDataSrv" "s") [] s)
+ (call %init_peer_id% ("callbackSrv" "response") [s])
+)

@@ -55,8 +55,8 @@ func poll() -> *string:
 
    -- env_service_id <- deploy_service_with_sqllite(FLUENCE_NODE, ENV_FACADE_CID, SQL_ADAPTER_CID, REMOTE_IPFS_PEER, "env_facade", "env_service")
 
-    ens_service_id <- deploy_service(FLUENCE_NODE, ENS_FACADE_CID, CURL_ADAPTER_CID, REMOTE_IPFS_PEER, "ens_facade", "ens_service")
-    event_service_id <- deploy_service(FLUENCE_NODE, EVENT_FACADE_CID, CURL_ADAPTER_CID, REMOTE_IPFS_PEER, "event_facade", "event_service")
+    ens_service_id <- deploy_service(FLUENCE_NODE, ENS_FACADE_CID, CURL_ADAPTER_CID, REMOTE_IPFS_PEER, "ens_facade", "ens_service","")
+    event_service_id <- deploy_service(FLUENCE_NODE, EVENT_FACADE_CID, CURL_ADAPTER_CID, REMOTE_IPFS_PEER, "event_facade", "event_service","")
 
     EnsService ens_service_id
     filter_id <- EnsService.get_record(FILTER_ID_KEY, ETH_PROVIDER_URL)
@@ -74,8 +74,8 @@ func poll() -> *string:
 
     if id != "0": 
 
-      graph_service_id <- deploy_service(FLUENCE_NODE, GRAPH_FACADE_CID, CURL_ADAPTER_CID, REMOTE_IPFS_PEER, "graph_facade", "graph_service")
-      ipld_service_id <- deploy_service(FLUENCE_NODE, IPLD_FACADE_CID, CURL_ADAPTER_CID, REMOTE_IPFS_PEER, "ipld_facade", "ipld_service")
+      graph_service_id <- deploy_service(FLUENCE_NODE, GRAPH_FACADE_CID, CURL_ADAPTER_CID, REMOTE_IPFS_PEER, "graph_facade", "graph_service","")
+      ipld_service_id <- deploy_service(FLUENCE_NODE, IPLD_FACADE_CID, CURL_ADAPTER_CID, REMOTE_IPFS_PEER, "ipld_facade", "ipld_service","")
 
       EnsService ens_service_id
       tip <- EnsService.get_record(TIP_KEY, ETH_PROVIDER_URL)
@@ -102,8 +102,8 @@ func update_filter() -> string, string:
 
   on FLUENCE_NODE: 
 
-      ens_service_id, err <- deploy_service(FLUENCE_NODE, ENS_FACADE_CID, CURL_ADAPTER_CID, REMOTE_IPFS_PEER, "ens_facade", "ens_service")
-      event_service_id <- deploy_service(FLUENCE_NODE, EVENT_FACADE_CID, CURL_ADAPTER_CID, REMOTE_IPFS_PEER, "event_facade", "event_service")
+      ens_service_id, err <- deploy_service(FLUENCE_NODE, ENS_FACADE_CID, CURL_ADAPTER_CID, REMOTE_IPFS_PEER, "ens_facade", "ens_service","")
+      event_service_id <- deploy_service(FLUENCE_NODE, EVENT_FACADE_CID, CURL_ADAPTER_CID, REMOTE_IPFS_PEER, "event_facade", "event_service","")
 
       EventService event_service_id
     --  filter_id  <- EventService.create_filter()

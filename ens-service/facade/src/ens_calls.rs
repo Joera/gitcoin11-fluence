@@ -29,6 +29,7 @@ use crate::eth_utils::{
 
 use crate::fce_results::JsonRpcResult;
 use crate::jsonrpc_helpers::{ Request };
+//use crate::eip1559_types::{AccessList};
 
  use marine_rs_sdk::marine;
 
@@ -48,6 +49,7 @@ use crate::jsonrpc_helpers::{ Request };
  use_contract!(ens_resolver, "resolver.json");
 
  const RESOLVER: &str = "0xf6305c19e814d2a75429Fd637d01F7ee0E77d615";
+
 
  #[marine]
  pub fn get_record(key: String, eth_provider_url: String, ens_domain: String) -> String {
@@ -95,21 +97,61 @@ use crate::jsonrpc_helpers::{ Request };
     
     // build the transaction 
     let mut tx_request = TransactionRequest {
-         from: Some(address_for_from(&sender)),
-         to: Some(address_for_to(&sender)),
-         gas: Some(80_000.into()),
+         from: None,
+         to: Some(address_for_to(&RESOLVER)),
+         gas: Some(500_000.into()),
          gas_price: Some(gas_price_for_raw_transaction(&eth_provider_url)),
          value: None,
          data : Some(input_data_bytes), 
-         nonce: Some(get_transaction_count(&sender.to_string(), &eth_provider_url))
+         nonce: Some(get_transaction_count(&sender.to_string(), &eth_provider_url) + 0)
+    };
+
+    /* waiting to re-use ethers types ... requires marine to work with serde 
+
+    let mut eip1559_tx_request = Eip1559TransactionRequest {
+      from: None,
+      to:Some(address_for_to(&RESOLVER)),
+      gas: None,
+      value: None,
+      data : Some(input_data_bytes), 
+      nonce: Some(get_transaction_count(&sender.to_string(), &eth_provider_url) + 2),
+      access_list: vec!(),
+      max_priority_fee_per_gas: Some(10_000.into()),
+      max_fee_per_gas: Some(250_000.into())
+    }; */
+
+    serde_json::to_string(&tx_request).unwrap()
+  } 
+
+  #[marine]
+ pub fn prepare_update_with_u64(eth_provider_url: &String, sender: String, ens_domain: String, key: String, value: u64 ) -> String {
+
+    // build contract specific part of the transaction 
+    let input_data_bytes: EthBytes = ens_resolver::functions::set_text::encode_input(
+      
+      H256::from_slice(&convert(&ens_domain.as_str())[..]), // ens_node
+      key,  // property name 
+      value.to_string() // property value
+    
+    ).into(); 
+    
+    // build the transaction 
+    let mut tx_request = TransactionRequest {
+         from: None,
+         to: Some(address_for_to(&RESOLVER)),
+         gas: Some(200_000.into()),
+         gas_price: Some(gas_price_for_raw_transaction(&eth_provider_url)),
+         value: None,
+         data : Some(input_data_bytes), 
+         nonce: Some(get_transaction_count(&sender.to_string(), &eth_provider_url) + 0)
     };
 
     serde_json::to_string(&tx_request).unwrap()
-  }
+  } 
 
 
   #[marine]
-  pub fn make_update_request(eth_provider_url: String, tx_string: String) -> String {
+  pub fn make_update_request(eth_provider_url: String, tx_string: String) -> JsonRpcResult {
  
     let nonce = get_nonce();
 
@@ -123,8 +165,6 @@ use crate::jsonrpc_helpers::{ Request };
       vec![tx_string]
     );
 
-    let response: JsonRpcResult = request(curl_args, nonce);
-       
-    response.result
-
+    request(curl_args, nonce)
+      
  }

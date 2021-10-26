@@ -89,6 +89,7 @@ service Op("op"):
     -- concatenate strings (in AIR it takes any number of arguments)
     concat_strings(a: string, b: string) -> string
 
+
 service Peer("peer"):
     -- Checks if there is a direct connection to the peer identified by a given PeerId
     -- Argument: PeerId – id of the peer to check if there's a connection with

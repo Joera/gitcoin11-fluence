@@ -1,52 +1,106 @@
 import "builtin.aqua"
 import "process.aqua"
+import "ipfs.aqua"
 
-service IdentityService("service-id"):
+data JsonRpcResult:
+    jsonrpc: string
+    result: string
+    error: string
+    id: u64
+
+data LastError:  
+    instruction: string -- What AIR instruction failed  
+    msg: string -- Human-readable error message  
+    peer_id: string -- On what peer the error happened
+
+service SignerService("service-id"):
     initiate() -> []string
-    test() -> string
-    sign_transaction_request: string -> string
+    address() -> string
+    sign_tx: string, u64 -> string
     
 service EnsService("service-id"):
-    get_record: string, string -> string
+    get_record: string, string, string -> string
     prepare_update: string, string, string, string, string -> string
-    make_update_request: string, string -> string
+    prepare_update_with_u64: string, string, string, string, u64 -> string
+    make_update_request: string, string -> JsonRpcResult
 
 const ETH_PROVIDER_URL = "https://eth-rinkeby.alchemyapi.io/v2/oDMoyeai5fTVQxfpjKQVJM3ltl1ap9z7"
 const FLUENCE_NODE = "12D3KooWT1A4Wj45viEY9b1jVMWXxQyocSGXAbiTvHFxAbfiZjHb"
 
-const CURL_ADAPTER_CID = "QmY8Qe375TJCMaAiskUZTfFTyABrULTgVrmW8sYQELFS5d"
-const LOCAL_STORAGE_CID = "QmdeQSspMHz7B7wQezDkJGxfWzghwUmpimC7t3t8aXBKve"
-const ENS_FACADE_CID = "QmWr6K7ExAZFVTWTeHQbgt9e6Qfzj8sya3PZBWwgaHaMhZ"
-const IDENTITY_FACADE_CID = "QmXre6pE7UCZg2knYB9Aqj4cUVGCBGctDLxyjztno6ZXs2"
+const CURL_ADAPTER_CID = "QmbKBnJcwAZo5GvGn6yrkGnv2tvg1HLvSctPmCtwHbun3s" -- "QmY8Qe375TJCMaAiskUZTfFTyABrULTgVrmW8sYQELFS5d"
+const ENS_FACADE_CID = "QmSd5KgG6wFwTiZmNc438Qw3DF7UMcumE7KCz8uFdkmLSg" -- "QmVcpwLsgnggGGcXzuVhxQP6rCnQWM6wt338VoYDyuk4YAcd "
+const SIGNER_FACADE_CID = "QmZpkyAkMuYCoPZLEdRXxPA2zfTSftXLBYT2k42Q31Lm9A" -- private "QmUAJY98BVUMbyYL5RxmgnoJHgRSGPhCmMwADFQjoqHSn6" 
 
 const REMOTE_IPFS_PEER = "/ip4/64.227.70.116/tcp/5001"
 
+const CHAINID = 4
 
-func deploy_identity() -> string, string, string:
+func clone_string(s: string) -> string:
 
-    on FLUENCE_NODE:
+    <- s
 
-        identity_service_id <- deploy_service_with_storage(FLUENCE_NODE, IDENTITY_FACADE_CID, CURL_ADAPTER_CID, LOCAL_STORAGE_CID, REMOTE_IPFS_PEER, "id_facade", "id_service")
-
-        IdentityService identity_service_id
-        result <- IdentityService.initiate()
-
-    <- result!, identity_service_id, result!1
-
-func test(identity_service_id: string, sender: string, value: string) -> string:
+func deploy_signer() -> string, string, string:
 
     on FLUENCE_NODE:
 
-        ens_service_id <- deploy_service(FLUENCE_NODE, ENS_FACADE_CID, CURL_ADAPTER_CID, REMOTE_IPFS_PEER, "ens_facade", "ens_service")
+        signer_service_id <- deploy_service(FLUENCE_NODE, SIGNER_FACADE_CID, CURL_ADAPTER_CID, REMOTE_IPFS_PEER, "id_facade", "id_service","secret_signer")
 
-        EnsService ens_service_id
-        tx_request <- EnsService.prepare_update(ETH_PROVIDER_URL, sender, "alpha.public-record.eth","notice", value)
+        if signer_service_id != "0":
 
-        IdentityService identity_service_id
-        signed_tx_request <- IdentityService.sign_transaction_request(tx_request)
+            SignerService signer_service_id
+            address <- SignerService.initiate()
+            
+    <- address!, signer_service_id, address!1
 
-        result <- EnsService.make_update_request(ETH_PROVIDER_URL, signed_tx_request)
 
-        remove_service(FLUENCE_NODE, ens_service_id) 
 
-    <- result
+func test(signer_service_id: string, sender: string, value: string) -> ?JsonRpcResult, string, string, *IpfsGetResult, *LastError:
+
+    on FLUENCE_NODE:
+
+        errors: *LastError
+        result: ?JsonRpcResult
+
+        try:
+            ens_service_id, ipfs_results <- deploy_service(FLUENCE_NODE, ENS_FACADE_CID, CURL_ADAPTER_CID, REMOTE_IPFS_PEER, "ens_facade", "ens_service","")
+            EnsService ens_service_id
+            
+            tx_request <- EnsService.prepare_update(ETH_PROVIDER_URL, sender, "alpha.public-record.eth","test", value)
+            SignerService signer_service_id
+            signed_tx_request <- SignerService.sign_tx(tx_request, CHAINID)
+            result <- EnsService.make_update_request(ETH_PROVIDER_URL, signed_tx_request)
+            Srv.remove(ens_service_id)
+        catch e:         
+            errors <<- e
+   
+
+    <- result, tx_request, ens_service_id, ipfs_results, errors
+
+func interval() -> string:  -- kun je een functie retourneren 
+
+    on FLUENCE_NODE:
+
+        errors: *LastError
+        result: ?JsonRpcResult
+  
+        timestamp <- Peer.timestamp_sec()
+
+        try:
+            ens_service_id, ipfs_results <- deploy_service(FLUENCE_NODE, ENS_FACADE_CID, CURL_ADAPTER_CID, REMOTE_IPFS_PEER, "ens_facade", "ens_service","")
+            EnsService ens_service_id
+            signer_service_id <- EnsService.get_record("signer_service_id", ETH_PROVIDER_URL,"alpha.public-record.eth")
+
+            SignerService signer_service_id
+            sender <- SignerService.address()
+
+            tx_request <- EnsService.prepare_update_with_u64(ETH_PROVIDER_URL, sender, "alpha.public-record.eth","notice", timestamp)
+            
+            signed_tx_request <- SignerService.sign_tx(tx_request, CHAINID)
+            result <- EnsService.make_update_request(ETH_PROVIDER_URL, signed_tx_request)
+            Srv.remove(ens_service_id)
+
+        catch e:         
+            errors <<- e
+
+
+    <- ens_service_id
