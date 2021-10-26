@@ -1,14 +1,14 @@
 Hi,
 
-Not a finished repo this is. Just my work in progress. 
+Not a finished repo this is. Work in progress. 
 
 The plan is to design wasm modules for basic tasks in the decentralized ecosystem, that can be pieced together ona computation network, in this case that is Fluence.  
 
-While we see the emergence of protocols governed by DAO's, we can assume that these protocols will want to cooperate with services that are similar in nature. These may be services that run without interference by a single human. Code updates - for example - can only be implemented by the governing entity. 
+While we see the emergence of protocols governed by DAO's, we can assume that these protocols will want to cooperate with services that are similar in nature. These would be services that can run without interference by a single human. Code updates - for example - can only be implemented by the governing entity. 
 
 This could be an autnomous static site generator that publishes articles approved by am editorial DAO or a open data aggregation pipeline that is supported by multiple stakeholders. 
 
-At the time of writing i have build proof of concepts for 
+At the time of writing i have build proof of concepts for:  
 
 0/ services that can be loaded from a remote ipfs node and removed after task has been completed. Imagine that you can get the cid of the wasm file from an ENS text record that can only be written by the governing entity. Hence, wasm code can be updated as a result of decentralised governance. 
 
@@ -36,5 +36,3 @@ d/ send funds to new address
 e/ npm run start_interval  
 
 I want to write a proper blog post on this at a later date. Write me an email when you have remarks or ideas: joera@joermaulders.com 
-
-
