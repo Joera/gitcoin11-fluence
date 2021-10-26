@@ -1,0 +1,44 @@
+import "builtin.aqua"
+import "process.aqua"
+import "ipfs.aqua"
+
+
+const FLUENCE_NODE = "12D3KooWT1A4Wj45viEY9b1jVMWXxQyocSGXAbiTvHFxAbfiZjHb"
+
+const SCRIPT_AIR_CID = "QmaGzzBL7UgnRi59zYwxp4WnPRQpxzb8ohE9ikAydXvXbQ"
+const FILE_READER_CID = "QmUD71rbLS7qw2LtdHgMHifqnnXxpkJHxRjEHq9jtveARQ"
+const CURL_ADAPTER_CID = "QmbKBnJcwAZo5GvGn6yrkGnv2tvg1HLvSctPmCtwHbun3s"
+
+const REMOTE_IPFS_PEER = "/ip4/64.227.70.116/tcp/5001"
+
+service FileReader("service-id"):
+    read_file: string -> string
+
+    
+func start() -> string :
+
+    on FLUENCE_NODE:
+
+        -- downloads air file from remote ipfs node
+        signer_air <- Ipfs.get_from(SCRIPT_AIR_CID, REMOTE_IPFS_PEER) 
+
+        -- reads air code from downloaded file
+        file_reader_service_id <- deploy_service(FLUENCE_NODE, FILE_READER_CID, CURL_ADAPTER_CID, REMOTE_IPFS_PEER, "file_reader_facade", "file_reader_service","")
+        FileReader file_reader_service_id
+        test_signer <- FileReader.read_file(signer_air.path)
+
+        -- run air code at interval of 60s
+        interval_1min: ?string
+        interval_1min <<- "60"
+        res <- Script.add(test_signer, interval_1min) 
+
+    <- res
+
+func stop(service_id: string) -> bool : 
+
+    on FLUENCE_NODE:
+
+        res <- Script.remove(service_id) 
+
+    <- res
+
